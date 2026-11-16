@@ -35,6 +35,7 @@ python3 03-cao-3d/generer_visualiseur_html.py       # rebuild the viewer only
 - The female cavity is defined as tongue + `JEU_IMPRESSION` from x = 10.2 (fixes a ~0.2 mm V1 overlap). After changing joint geometry, check that two rails joined end to end have zero intersection volume (`a.intersect(a.translate((L,0,0)))`).
 - 3D fillets that meet the R2 top fillet (e.g. on vertical joint corners) produce non-manifold STL slivers; `verifier_stl.py` catches this. Prefer fillets in the 2D profile.
 - One generator per part family (`generer_rails.py`, …); V1 scripts are retired as their parts get ported.
+- `gen_*.py` scripts (e.g. `gen_jauge_calibration.py`) are written by the local model through `outils/deleguer_modele_local.py` (LM Studio `localhost:1234`, `openai/gpt-oss-20b`; `--url` for Ollama). The system prompt is `03-cao-3d/contrat-interface-cadquery.txt` — update it when `cao_commun` changes. Every delegated part needs a functional checker (`outils/controler_*.py`, passed via `--controle`): a watertight STL can still be wrong, and the model only self-corrects when the feedback states what is actually in the part. Record scores in section 5 of `plan-developpement-stl-benchmark.md`.
 
 ### V1 (pure Python, being retired)
 
