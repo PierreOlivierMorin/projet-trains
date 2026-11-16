@@ -1,0 +1,20 @@
+Mission (Niveau 1) : écris le script `03-cao-3d/gen_jauge_calibration.py` qui génère la pièce
+`jauge_calibration_tolerances` (appel final : c.exporter(piece, "jauge_calibration_tolerances")).
+
+But : une plaquette d'essai à imprimer AVANT tout le reste pour choisir le jeu d'impression du Snap-Fit
+et le diamètre de perçage des axes de roues sur l'imprimante de l'utilisateur.
+
+Spécifications (mm) :
+1. Plaquette pleine : x ∈ [0, 55], y ∈ [-40, +40], z ∈ [0, 12] (hauteur = c.RAIL_HAUTEUR, pour que
+   l'embout mâle d'un rail standard puisse s'y enfoncer).
+2. Arrondis : les 4 arêtes verticales extérieures avec un congé de 3.0 ; l'arête basse tout autour
+   avec un chanfrein de 0.6 (c.CHANFREIN_BAS). Fais ces arrondis AVANT les découpes.
+3. Quatre prises femelles Snap-Fit ouvertes sur la face x = 0, centrées en y = -30, -10, +10, +30,
+   avec respectivement jeu = 0.10, 0.15, 0.20 et 0.25 : utilise c.cavite_femelle(jeu=...) translatée en y.
+4. Quatre trous verticaux traversants pour tige d'axe Ø 3 mm, alignés en x = 42, centrés en
+   y = -22.5, -7.5, +7.5, +22.5, de diamètres 2.95, 3.00, 3.05 et 3.10.
+5. Marquage gravé sur le dessus (profondeur 0.6) pour lire les essais une fois imprimé :
+   au-dessus de chaque prise, en x = 26, les textes "10", "15", "20", "25" (taille 5) ;
+   à côté de chaque trou, en x = 50, les textes "95", "00", "05", "10" (taille 3.5).
+   Utilise cq.Workplane("XY").workplane(offset=12).center(x, y).text(txt, taille, -0.6) puis .cut.
+6. La pièce finale doit être un seul solide valide posé sur z = 0.

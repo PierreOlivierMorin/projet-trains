@@ -196,25 +196,29 @@ def saillie_v(z: float) -> float:
     return V_SAILLIE * (1.0 - abs(z - V_Z_CRETE) / (V_Z_HAUT - V_Z_CRETE))
 
 
-def demi_largeur_cavite(x: float, z: float) -> float:
-    """Demi-largeur de la prise femelle pour x ∈ [0 ; 17,2].
+def demi_largeur_cavite(x: float, z: float, jeu: float = JEU_IMPRESSION) -> float:
+    """Demi-largeur de la prise femelle pour x ∈ [0 ; 17,2], avec `jeu` par face.
 
-    Logement des bras inchangé depuis la V1. À partir de x = 10,2, la gorge épouse la languette
-    à JEU_IMPRESSION près (correctif V2 : en V1, la crête en V de la languette commençait avant
-    la gorge et chevauchait la prise d'environ 0,2 mm vers x = 10,9).
+    Le logement des bras suit la V1 (avec jeu = 0,20 : entrée 5,30, contre-dépouille 6,50).
+    À partir de x = 10,2, la gorge épouse la languette à `jeu` près (correctif V2 : en V1, la
+    crête en V de la languette commençait avant la gorge et chevauchait la prise d'environ
+    0,2 mm vers x = 10,9).
     """
+    entree = 5.10 + jeu            # Bras droit (5,10)
+    contre_depouille = 6.30 + jeu  # Crochet du bras (6,20) + 0,10 de dégagement
+    gorge = 1.60 + jeu             # Languette (1,60)
     if x <= 3.9:
-        return 5.30
+        return entree
     if x <= 4.4:
-        return 5.30 + (x - 3.9) / 0.5 * (6.50 - 5.30)
+        return entree + (x - 3.9) / 0.5 * (contre_depouille - entree)
     if x <= 9.8:
-        return 6.50
+        return contre_depouille
     if x <= 10.2:
-        return 6.50 + (x - 9.8) / 0.4 * (1.80 - 6.50)
+        return contre_depouille + (x - 9.8) / 0.4 * (gorge - contre_depouille)
     if x <= MALE_LONGUEUR:
-        return demi_largeur_languette(x, z) + JEU_IMPRESSION
+        return demi_largeur_languette(x, z) + jeu
     t = (x - MALE_LONGUEUR) / (FEMELLE_LONGUEUR - MALE_LONGUEUR)
-    return max((demi_largeur_languette(MALE_LONGUEUR, z) + JEU_IMPRESSION) * (1.0 - t), 0.01)
+    return max((demi_largeur_languette(MALE_LONGUEUR, z) + jeu) * (1.0 - t), 0.01)
 
 
 def demi_largeur_languette(x_rel: float, z: float) -> float:
@@ -250,11 +254,16 @@ _Z_V = [V_Z_BAS, V_Z_CRETE, V_Z_HAUT]
 _RECOUVREMENT = 0.5  # Ancrage des pièces rapportées dans le corps (union robuste)
 
 
-def cavite_femelle() -> cq.Workplane:
-    """Volume à soustraire au corps pour former la prise femelle à x = 0 (traverse toute la hauteur)."""
+def cavite_femelle(jeu: float = JEU_IMPRESSION) -> cq.Workplane:
+    """Volume à soustraire au corps pour former la prise femelle à x = 0 (traverse toute la hauteur).
+
+    `jeu` (par face) permet de fabriquer des prises d'essai plus serrées ou plus lâches.
+    """
     stations = [-_RECOUVREMENT, 3.9, 4.4, 9.8, 10.2, 11.5, 15.8, MALE_LONGUEUR, FEMELLE_LONGUEUR]
     zs = [-_RECOUVREMENT] + _Z_V + [RAIL_HAUTEUR + _RECOUVREMENT]
-    return cq.Workplane().add(solide_par_sections(stations, demi_largeur_cavite, zs))
+    return cq.Workplane().add(
+        solide_par_sections(stations, lambda x, z: demi_largeur_cavite(x, z, jeu), zs)
+    )
 
 
 def connecteur_male(x_face: float) -> cq.Workplane:

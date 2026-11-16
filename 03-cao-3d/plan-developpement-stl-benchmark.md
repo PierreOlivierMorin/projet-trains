@@ -1,31 +1,45 @@
 # Plan de Développement STL & Benchmark pour Modèle Local
 
-Ce document sert de **banc d'essai progressif** pour évaluer la capacité de votre modèle local à concevoir, programmer en Python et exporter des fichiers `.STL` valides et mécaniquement compatibles avec le **Projet Trains V1**.
+Ce document sert de **banc d'essai progressif** pour évaluer la capacité de votre modèle local à concevoir, programmer en Python et exporter des fichiers `.STL` valides et mécaniquement compatibles avec le **Projet Trains** (contrat V2 CadQuery depuis le 16 nov. 2026).
 
 ---
 
-## 1. Contrat d'Interface Mécanique (Prompt Système à donner au modèle local)
+## 1. Contrat d'Interface Mécanique V2 — CadQuery (Prompt Système à donner au modèle local)
 
-Avant de demander une pièce au modèle local, donnez-lui ce bloc de contexte fixe pour garantir la compatibilité 1:1 avec vos pièces existantes :
+Avant de demander une pièce au modèle local, donnez-lui ce bloc de contexte fixe. Depuis la V2, les pièces sont écrites avec **CadQuery** et réutilisent le socle [`cao_commun.py`](./cao_commun.py) ; le texte exact envoyé au modèle est aussi dans [`contrat-interface-cadquery.txt`](./contrat-interface-cadquery.txt).
 
 ```text
-Tu développes des pièces CAO 3D en Python pur (sans dépendance externe, en important
-`WatertightMesh`, `add_female_and_body`, `add_male_snapfit` depuis `03-cao-3d/generer_prototype_rails.py`)
-pour le système de train modulaire Projet Trains V1.
+Tu écris des scripts Python CadQuery (cadquery 2.8, Python 3.13) pour le Projet Trains, un train jouet
+modulaire. Le script est placé dans 03-cao-3d/ et fait `import cadquery as cq` et `import cao_commun as c`.
+Il est lancé par `.venv/bin/python 03-cao-3d/<script>.py`.
 
-RÈGLES MÉCANIQUES INVARIANTES (en mm) :
-- Profil de rail standard : largeur = 40.0, hauteur = 12.0, plateau Z = 0.0 sur le lit.
-- Rainures de roulement : largeur = 6.0, profondeur = 3.0 (fond à z = 9.0),
-  espacement centre-à-centre TRACK_GAUGE = 25.5 (GROOVE_INNER_Y = 9.75, GROOVE_OUTER_Y = 15.75).
-- Jonctions : prise femelle [0.0 .. 17.2] et languette mâle Snap-Fit [16.5] avec tolérance
-  PRINT_CLEARANCE = 0.20 par face et verrouillage vertical V-groove 45° (z = 4.5..7.5).
-- Rail Funky : crémaillère centrale y ∈ [-1.60, +1.60], z = 12.0..14.0 (pas 4.0, dent 2.0),
-  loges acier y ∈ [±5.10, ±7.25] (z = 11.0..12.0), glissières captives 45° sur y = ±20.0 -> ±18.5 (z = 4.5..7.5).
-- Locomotive : essieu à z_rail = 21.0, roues Ø 24.0 (boudin Ø 27.6), pignon central 12 dents Ø 16.8
-  (bas des dents à z = 12.6, garde +0.6 au-dessus des rails normaux, prise 1.4 dans crémaillère 14.0).
+REPÈRE : X = sens de la voie, Y = travers (centré sur 0), Z = hauteur ; la pièce repose sur z = 0.
+
+API DU SOCLE `cao_commun` (à réutiliser, ne jamais redéfinir ces cotes) :
+- Constantes (mm) : c.RAIL_LARGEUR = 40.0, c.RAIL_HAUTEUR = 12.0, c.ECARTEMENT = 25.5,
+  c.RAINURE_LARGEUR = 6.0, c.Z_FOND_RAINURE = 9.0, c.Y_RAINURE_INT = 9.75, c.Y_RAINURE_EXT = 15.75,
+  c.DEMI_LARGEUR = 20.0, c.JEU_IMPRESSION = 0.20, c.FEMELLE_LONGUEUR = 17.2, c.MALE_LONGUEUR = 16.5,
+  c.MODULE_HAUTEUR = 12.5, c.CHANFREIN_BAS = 0.6.
+- c.corps_rail_droit(longueur) -> Workplane : profil de rail arrondi extrudé sur x ∈ [0, longueur].
+- c.cavite_femelle(jeu=0.20) -> Workplane : volume à SOUSTRAIRE (.cut) pour créer une prise femelle
+  Snap-Fit à x = 0 ; elle occupe x ∈ [-0.5, 17.2], |y| <= 6.5, toute la hauteur z ∈ [-0.5, 12.5].
+  Pour une prise ailleurs : .translate((x, y, 0)) ; pour l'orienter vers -X : .mirror("YZ") avant translate.
+- c.connecteur_male(x_face) -> Workplane : languette + bras à UNIR (.union) sur une face de jonction à x = x_face,
+  dépassant vers +X jusqu'à x_face + 16.5.
+- c.rail_droit(longueur, stries=False, evide=True) -> Workplane : rail complet (femelle à x=0, mâle à x=longueur).
+- c.exporter(piece, "nom_fichier") : vérifie la validité et z_min == 0, écrit stl/nom_fichier.stl et step/nom_fichier.step.
+
+RÈGLES MÉCANIQUES INVARIANTES (mm) :
+- Locomotive : essieu à z = 21.0, roues Ø 24.0, pignon central Ø 16.8 (bas des dents à z = 12.6).
 - Gros blocs (piliers/wagons) : grille 15.9 mm, tenons Ø 9.4 mm, hauteur 4.5 mm.
-- Sécurité impression : maillage 100 % étanche (verify_manifold()), Z_min == 0.0, 0 triangle dégénéré,
-  surplombs <= 45° (imprimable sans supports autant que possible).
+- Hauteurs de voie par multiples de 12.5 mm.
+
+RÈGLES D'IMPRESSION ET DE STYLE :
+- Un seul solide valide, posé sur z = 0 ; parois >= 1.2 mm ; surplombs <= 45° (pas de supports).
+- Arêtes verticales extérieures arrondies (.edges("|Z").fillet(r)), arête basse en chanfrein 0.6 plutôt qu'en congé.
+- Appliquer les congés AVANT les perçages et les .cut de prises (sinon le fillet échoue).
+- Termine toujours par c.exporter(piece, "<nom>") dans un bloc if __name__ == "__main__".
+Réponds uniquement avec le script Python complet dans un bloc ```python.
 ```
 
 ---
@@ -161,3 +175,30 @@ Pour chaque niveau testé, lancez `python3 03-cao-3d/verifier_stl.py --update-vi
 > **Où s'arrêtent généralement les modèles locaux ?**
 > - Les petits modèles (7B–14B) réussissent bien le **Niveau 1**, peinent au **Niveau 2** sur l'annulation des faces internes (`0` arête ouverte) et échouent souvent au **Niveau 3** (courbes 3D sans auto-intersection).
 > - Les bons modèles de code (32B+ ou spécialisés) réussissent jusqu'aux **Niveaux 3–4** s'ils s'appuient proprement sur `WatertightMesh` et `add_hex`.
+
+---
+
+## 5. Résultats mesurés
+
+Délégation automatisée par [`outils/deleguer_modele_local.py`](../outils/deleguer_modele_local.py) : le modèle reçoit le contrat CadQuery + la tâche, son script est exécuté, contrôlé par `verifier_stl.py` puis par un contrôle fonctionnel propre à la pièce (ex. [`outils/controler_jauge.py`](../outils/controler_jauge.py)), et chaque erreur lui est renvoyée.
+
+### Tâche 1.1 — `jauge_calibration_tolerances.stl` · `gpt-oss-20b` (LM Studio) · 16 nov. 2026
+
+| Passage | Retour au modèle | Essais | Résultat |
+| :--- | :--- | :---: | :--- |
+| 1 | Erreurs Python + `verifier_stl.py` | 7 | STL étanche **mais faux** : 3 trous sur 4 mal placés (`center()` cumulé), gravures extrudées vers le haut (rien n'est gravé) |
+| 2 | + contrôle fonctionnel (verdicts seuls) | 15 | Échec : bloque sur les trous (extrudés sous la plaque), ne sait pas où ils sont |
+| 3 | + positions réelles des perçages | 14 | **Conforme** (4 prises aux bons jeux, 4 trous aux bons Ø, 8 gravures) |
+
+| Critère | Note | Commentaire |
+| :--- | :---: | :--- |
+| 1. Code exécutable | `12 / 20` | Nombreux plantages CadQuery : sélecteurs vides (`edges("XY")`), `.cut()` sans argument, `.offset()` inexistant, réponses sans code |
+| 2. Étanchéité | `30 / 30` | Toujours étanche dès que le script s'exécute (le noyau OpenCASCADE fait le travail) |
+| 3. Cotes d'interface | `25 / 30` | Conforme au final, mais seulement avec un retour précis sur les positions ; réutilise bien `c.cavite_femelle(jeu=…)` |
+| 4. Imprimabilité | `18 / 20` | À plat, sans supports ; gravures de 3,5 mm de haut à la limite de la lisibilité en FDM |
+| **Total** | **`85 / 100`** | **36 essais (~10 min)** au total |
+
+**Enseignements :**
+- `verifier_stl.py` ne suffit plus avec CadQuery : un STL étanche peut être fonctionnellement faux. Chaque tâche déléguée doit avoir son contrôle fonctionnel.
+- Le modèle se corrige mal à partir d'un simple verdict ; il faut lui renvoyer **ce qui est réellement dans la pièce** (positions, dimensions mesurées).
+- Faiblesse principale : le raisonnement spatial (sens d'extrusion, repère de `center()` / `workplane()`), pas la syntaxe.
