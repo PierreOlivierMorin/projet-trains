@@ -15,7 +15,7 @@ The CAD is mid-migration from pure-Python meshes (V1) to **CadQuery** (V2, see `
 ```bash
 /opt/homebrew/bin/python3.13 -m venv .venv && .venv/bin/pip install -r requirements.txt   # one-time setup
 .venv/bin/python 03-cao-3d/generer_rails.py         # V2 rails (CadQuery) → stl/*.stl + step/*.step
-python3 03-cao-3d/generer_prototype_rails.py        # V1 track parts not yet ported (no longer writes the straight/slope rails)
+python3 03-cao-3d/generer_prototype_rails.py        # V1: action tile only (all other track parts are V2)
 python3 03-cao-3d/generer_prototype_locomotive.py   # regenerate the 4 locomotive STLs
 python3 03-cao-3d/verifier_stl.py                   # validate every STL in 03-cao-3d/stl/ (exit 1 on any FAIL)
 python3 03-cao-3d/verifier_stl.py path/to/one.stl   # validate specific file(s)
@@ -34,7 +34,7 @@ python3 03-cao-3d/generer_visualiseur_html.py       # rebuild the viewer only
 - Snap-Fit and V-lock geometry are z-dependent; they are built by `solide_par_sections()` — a ruled loft of YZ sections at fixed X stations, which reproduces the V1 piecewise-linear shapes exactly. Keep station lists in sync with the breakpoints of the half-width functions.
 - The female cavity is defined as tongue + `JEU_IMPRESSION` from x = 10.2 (fixes a ~0.2 mm V1 overlap). After changing joint geometry, check that two rails joined end to end have zero intersection volume (`a.intersect(a.translate((L,0,0)))`).
 - 3D fillets that meet the R2 top fillet (e.g. on vertical joint corners) produce non-manifold STL slivers; `verifier_stl.py` catches this. Prefer fillets in the 2D profile.
-- One generator per part family (`generer_rails.py`, …); V1 scripts are retired as their parts get ported.
+- One generator per part family (`generer_rails.py`, …); V1 scripts are retired as their parts get ported. Curved rails are a revolve of the same 2D profile around the curvature centre (`rail_courbe`), so fillets match the straights exactly; `troncon_droit` builds straight sections with optional female/male ends.
 - `gen_*.py` scripts (e.g. `gen_jauge_calibration.py`) are written by the local model through `outils/deleguer_modele_local.py` (LM Studio `localhost:1234`, `openai/gpt-oss-20b`; `--url` for Ollama). The system prompt is `03-cao-3d/contrat-interface-cadquery.txt` — update it when `cao_commun` changes. Every delegated part needs a functional checker (`outils/controler_*.py`, passed via `--controle`): a watertight STL can still be wrong, and the model only self-corrects when the feedback states what is actually in the part. Record scores in section 5 of `plan-developpement-stl-benchmark.md`.
 
 ### V1 (pure Python, being retired)

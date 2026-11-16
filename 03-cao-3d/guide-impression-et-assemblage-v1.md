@@ -9,15 +9,19 @@ Ce guide regroupe les **11 fichiers `.STL`** générés dans [`03-cao-3d/stl/`](
 
 ## 1. Inventaire des 11 fichiers `.STL` générés
 
-### Pièces de circuit (script [`generer_prototype_rails.py`](./generer_prototype_rails.py))
+### Pièces de circuit (script V2 CadQuery [`generer_rails.py`](./generer_rails.py), sauf la tuile : [`generer_prototype_rails.py`](./generer_prototype_rails.py))
+
+> Depuis la V2, les rails sont **évidés à nervures** (~40 % de filament en moins), arrondis (« jouet en bois premium ») et exportés aussi en `.step` dans [`step/`](./step/).
 
 | Fichier `.STL` | Dimensions hors-tout | Usage | Supports |
 | :--- | :--- | :--- | :---: |
 | [`rail_droit_100mm_snapfit.stl`](./stl/rail_droit_100mm_snapfit.stl) | `116,5 × 40,0 × 12,0 mm` | Rail droit de base à clip Snap-Fit + verrouillage vertical 45° | Non |
-| [`rail_courbe_45deg_snapfit.stl`](./stl/rail_courbe_45deg_snapfit.stl) | `160,8 × 88,3 × 12,0 mm` | Rail courbe 45° (`R = 180 mm`, 8 pièces = cercle complet) | Non |
+| [`rail_courbe_45deg_snapfit.stl`](./stl/rail_courbe_45deg_snapfit.stl) | `159,8 × 88,0 × 12,0 mm` | Rail courbe 45° (`R = 180 mm`, 8 pièces = cercle complet) | Non |
 | [`rail_cote_100mm_strie.stl`](./stl/rail_cote_100mm_strie.stl) | `116,5 × 40,0 × 12,0 mm` | Rail de montée avec micro-stries antidérapantes (`0,8 mm`) | Non |
 | [`adaptateur_rail_bois.stl`](./stl/adaptateur_rail_bois.stl) | `66,6 × 40,0 × 12,0 mm` | Raccord Snap-Fit femelle ↔ cheville mâle bois (`Ø 11,2 mm`) | Non |
 | [`pilier_verrouillable_duplo.stl`](./stl/pilier_verrouillable_duplo.stl) | `63,6 × 47,0 × 56,0 mm` | Pilier `H = 50 mm` (rebords `56 mm`), base compatible gros blocs | Non |
+| [`pilier_verrouillable_25mm.stl`](./stl/pilier_verrouillable_25mm.stl) | `63,6 × 47,0 × 31,0 mm` | Pilier `H = 25 mm` (rebords `31 mm`), même base | Non |
+| [`jauge_calibration_tolerances.stl`](./stl/jauge_calibration_tolerances.stl) | `55,0 × 80,0 × 12,0 mm` | **À imprimer en premier** : 4 prises Snap-Fit (jeux `0,10–0,25`) + 4 perçages (`Ø 2,95–3,10`) | Non |
 | [`tuile_action_clipsable.stl`](./stl/tuile_action_clipsable.stl) | `30,0 × 19,7 × 3,2 mm` | Tuile colorée clipsable avec canal central abaissé (`0,4 mm`) | Non |
 | [`rail_funky_cremaillere_captif.stl`](./stl/rail_funky_cremaillere_captif.stl) | `116,5 × 40,0 × 14,0 mm` | Rail cascade : crémaillère (`z=14 mm`), loges acier, glissières 45° | Non |
 

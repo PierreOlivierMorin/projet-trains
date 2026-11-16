@@ -55,6 +55,8 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 - **Congés des coins verticaux aux jonctions (retirés)** : leur raccord avec le congé R2 du dessus produisait des facettes défectueuses dans le STL. Coins invisibles une fois assemblés ; à reprendre lors du polissage.
 - **Boudin des roues (à trancher)** : boudin `Ø 27,6 mm` sur essieu à `z = 21,0` → bas du boudin à `z = 7,2 mm`, soit `1,8 mm` sous le fond de rainure (`z = 9,0`). Collision en V1, y compris sur rail bois. À résoudre lors de la refonte de la locomotive.
 
+- **Tuile d'action (à trancher)** : les pattes de clipsage (|y| ∈ [8,4 ; 9,85]) chevauchent le plateau central du rail (|y| ≤ 9,75) de `1,35 mm` : la tuile ne peut pas se clipser. Les déplacer dans les rainures bloquerait les roues. Tuile non portée en attendant un nouveau principe de fixation.
+
 ### 9. Ordre de travail
 1. Socle CadQuery (`cao_commun.py`).
 2. Jauge de calibration (gpt-oss) → **première impression**.

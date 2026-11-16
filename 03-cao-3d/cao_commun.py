@@ -307,9 +307,11 @@ def chanfreiner_entrees_rainures(rail: cq.Workplane, x_faces: list[float]) -> cq
     return rail.newObject(aretes).chamfer(CHANFREIN_ENTREE_RAINURE)
 
 
-def evidement_nervure(x0: float, x1: float) -> cq.Workplane:
-    """Poche ouverte par le dessous entre x0 et x1, cloisonnée par des nervures (transversales + axiale)."""
-    y_max = DEMI_LARGEUR - PAROI
+def evidement_nervure(x0: float, x1: float, y_max: float = DEMI_LARGEUR - PAROI) -> cq.Workplane:
+    """Poche ouverte par le dessous entre x0 et x1, cloisonnée par des nervures (transversales + axiale).
+
+    `y_max` réduit la poche quand les flancs sont entaillés (rail Funky : glissières captives).
+    """
     poche = cq.Workplane("XY").box(x1 - x0, 2 * y_max, Z_PLAFOND_EVIDEMENT, centered=(False, True, False))
     poche = poche.translate((x0, 0, -0.01))
 
@@ -338,21 +340,116 @@ def micro_stries(x0: float, x1: float) -> cq.Workplane:
 
 
 # ---------------------------------------------------------------------------
-# 7. Assemblage d'un rail droit standard
+# 7. Assemblage des rails
 # ---------------------------------------------------------------------------
-def rail_droit(longueur: float = 100.0, stries: bool = False, evide: bool = True) -> cq.Workplane:
-    """Rail droit complet : prise femelle à x = 0, connecteur mâle à x = longueur."""
+X_DEBUT_STRIES = 18.0  # Stries et crémaillère Funky alignées (pas de 4 mm à partir de x = 18)
+
+
+def troncon_droit(
+    longueur: float,
+    femelle: bool = True,
+    male: bool = True,
+    evide: bool = True,
+    stries: bool = False,
+    y_evidement: float = DEMI_LARGEUR - PAROI,
+) -> cq.Workplane:
+    """Tronçon droit sur x ∈ [0 ; longueur], avec prise femelle à x = 0 et/ou mâle à x = longueur."""
     rail = corps_rail_droit(longueur)
-    rail = chanfreiner_entrees_rainures(rail, [0.0, longueur])
-    rail = rail.cut(cavite_femelle())
+    faces = ([0.0] if femelle else []) + ([longueur] if male else [])
+    rail = chanfreiner_entrees_rainures(rail, faces)
+    if femelle:
+        rail = rail.cut(cavite_femelle())
     if evide:
-        x0 = FEMELLE_LONGUEUR + PAROI
+        x0 = (FEMELLE_LONGUEUR + PAROI) if femelle else PAROI
         x1 = longueur - 4.0
         if x1 - x0 > PAS_NERVURES:
-            rail = rail.cut(evidement_nervure(x0, x1))
+            rail = rail.cut(evidement_nervure(x0, x1, y_evidement))
     if stries:
-        rail = rail.union(micro_stries(FEMELLE_LONGUEUR + 1.0, longueur - 4.0))
-    return rail.union(connecteur_male(longueur))
+        rail = rail.union(micro_stries(X_DEBUT_STRIES, longueur - 4.0))
+    if male:
+        rail = rail.union(connecteur_male(longueur))
+    return rail
+
+
+def rail_droit(longueur: float = 100.0, stries: bool = False, evide: bool = True) -> cq.Workplane:
+    """Rail droit complet : prise femelle à x = 0, connecteur mâle à x = longueur."""
+    return troncon_droit(longueur, stries=stries, evide=evide)
+
+
+def rail_courbe(rayon: float = 180.0, angle_deg: float = 45.0, evide: bool = True) -> cq.Workplane:
+    """Rail courbe à gauche : entrée droite (femelle) de 17,2 mm + arc de rayon `rayon` (axe de voie)
+    + sortie droite de 2 mm portant le connecteur mâle, tangente à l'arc.
+
+    Le centre de courbure est en (FEMELLE_LONGUEUR, rayon). La sortie est orientée à `angle_deg`.
+    """
+    x_arc = FEMELLE_LONGUEUR
+    entree = troncon_droit(x_arc, femelle=True, male=False, evide=False)
+
+    pts, coins = points_profil_rail()
+    wp = cq.Workplane("YZ", origin=(x_arc, 0, 0))
+    arc = polygone_arrondi(wp, pts, coins).revolve(angle_deg, (rayon, 0, 0), (rayon, 1, 0))
+    if evide:
+        arc = arc.cut(_evidement_arc(x_arc, rayon, angle_deg))
+
+    sortie = troncon_droit(2.0, femelle=False, male=True, evide=False)
+    a = math.radians(angle_deg)
+    sortie = sortie.rotate((0, 0, 0), (0, 0, 1), angle_deg).translate(
+        (x_arc + rayon * math.sin(a), rayon - rayon * math.cos(a), 0)
+    )
+    return entree.union(arc).union(sortie)
+
+
+def _evidement_arc(x_arc: float, rayon: float, angle_deg: float) -> cq.Workplane:
+    """Poche à nervures (radiales + nervure axiale au rayon de voie) sous l'arc d'un rail courbe."""
+    y_max = DEMI_LARGEUR - PAROI
+    marge = math.degrees(PAROI / rayon)
+    a0, a1 = marge, angle_deg - marge
+    centre = (x_arc, rayon, 0)
+    # Couronne (rayon ± y_max) limitée au secteur angulaire de l'arc, moins les nervures
+    anneau = (
+        cq.Workplane("XY").workplane(offset=-0.01)
+        .center(*centre[:2])
+        .circle(rayon + y_max).circle(rayon - y_max)
+        .extrude(Z_PLAFOND_EVIDEMENT + 0.01)
+    )
+    secteur = (
+        cq.Workplane("XY").workplane(offset=-1)
+        .polyline(_secteur(centre, rayon + y_max + 5, a0, a1)).close()
+        .extrude(Z_PLAFOND_EVIDEMENT + 2)
+    )
+    poche = anneau.intersect(secteur)
+
+    longueur_arc = rayon * math.radians(a1 - a0)
+    n = max(1, round(longueur_arc / PAS_NERVURES))
+    for k in range(1, n):
+        ang = a0 + (a1 - a0) * k / n
+        nervure = (
+            cq.Workplane("XY").box(EPAISSEUR_NERVURE, 2 * y_max + 4, Z_PLAFOND_EVIDEMENT + 2)
+            .translate((0, 0, 0))
+            .rotate((0, 0, 0), (0, 0, 1), ang)
+            .translate(_point_arc(centre, rayon, ang))
+        )
+        poche = poche.cut(nervure)
+    axiale = (
+        cq.Workplane("XY").workplane(offset=-1)
+        .center(*centre[:2])
+        .circle(rayon + EPAISSEUR_NERVURE / 2).circle(rayon - EPAISSEUR_NERVURE / 2)
+        .extrude(Z_PLAFOND_EVIDEMENT + 2)
+    )
+    return poche.cut(axiale)
+
+
+def _point_arc(centre: tuple, r: float, ang_deg: float) -> tuple[float, float, float]:
+    a = math.radians(ang_deg)
+    return (centre[0] + r * math.sin(a), centre[1] - r * math.cos(a), 0.0)
+
+
+def _secteur(centre: tuple, r: float, a0: float, a1: float, n: int = 24) -> list[tuple[float, float]]:
+    pts = [centre[:2]]
+    for k in range(n + 1):
+        x, y, _ = _point_arc(centre, r, a0 + (a1 - a0) * k / n)
+        pts.append((x, y))
+    return pts
 
 
 # ---------------------------------------------------------------------------

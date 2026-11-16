@@ -275,6 +275,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     'adaptateur_rail_bois.stl': { label: 'Adaptateur rail bois', color: [0.78, 0.60, 0.36] },
     'pilier_verrouillable_duplo.stl': { label: 'Pilier H=50mm gros blocs', color: [0.92, 0.52, 0.18] },
     'tuile_action_clipsable.stl': { label: "Tuile d'action clipsable", color: [0.14, 0.80, 0.46] },
+    'pilier_verrouillable_25mm.stl': { label: 'Pilier H=25mm gros blocs', color: [0.95, 0.62, 0.28] },
     'jauge_calibration_tolerances.stl': { label: 'Jauge de calibration (jeux + perçages)', color: [0.85, 0.85, 0.30] },
   };
 

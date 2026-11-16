@@ -754,28 +754,9 @@ def build_action_tile() -> WatertightMesh:
 
 def main() -> None:
     out_dir = Path(__file__).resolve().parent / "stl"
-    # Rail droit et rail de côte : portés en CadQuery dans generer_rails.py (V2), plus générés ici.
+    # Toutes les autres pièces de voie sont portées en CadQuery (generer_rails.py, V2).
+    # Seule la tuile d'action reste ici, en attendant de revoir son clipsage.
     specs = [
-        (
-            out_dir / "adaptateur_rail_bois.stl",
-            build_wooden_adapter(),
-            "Projet Trains V1 - Adaptateur Snap-Fit vers Rail Bois",
-        ),
-        (
-            out_dir / "rail_funky_cremaillere_captif.stl",
-            build_funky_coaster_rail(),
-            "Projet Trains V1 - Rail Funky Cremaillere 14mm + Acier + Captif 45deg",
-        ),
-        (
-            out_dir / "rail_courbe_45deg_snapfit.stl",
-            build_curved_rail_45deg(),
-            "Projet Trains V1 - Rail Courbe 45deg R=180mm Snap-Fit",
-        ),
-        (
-            out_dir / "pilier_verrouillable_duplo.stl",
-            build_lockable_pillar_duplo(),
-            "Projet Trains V1 - Pilier Verrouillable H=50mm Compatible Gros Blocs",
-        ),
         (
             out_dir / "tuile_action_clipsable.stl",
             build_action_tile(),
