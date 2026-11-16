@@ -53,7 +53,11 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 ### 8. Écarts constatés pendant le portage
 - **Languette / prise femelle (corrigé)** : en V1, la crête en V de la languette commençait avant la gorge de la prise (chevauchement ~0,2 mm vers x = 10,9). En V2, la gorge épouse la languette avec `0,20 mm` de jeu à partir de x = 10,2 ; interférence entre deux rails assemblés = 0.
 - **Congés des coins verticaux aux jonctions (retirés)** : leur raccord avec le congé R2 du dessus produisait des facettes défectueuses dans le STL. Coins invisibles une fois assemblés ; à reprendre lors du polissage.
-- **Boudin des roues (à trancher)** : boudin `Ø 27,6 mm` sur essieu à `z = 21,0` → bas du boudin à `z = 7,2 mm`, soit `1,8 mm` sous le fond de rainure (`z = 9,0`). Collision en V1, y compris sur rail bois. À résoudre lors de la refonte de la locomotive.
+- **Boudin des roues (tranché : supprimé)** : en V1, le boudin `Ø 27,6 mm` descendait à `z = 7,2 mm`, `1,8 mm` sous le fond de rainure, y compris sur rail bois. Roue V2 : `Ø 24`, `5 mm` de large, **sans boudin**, guidée par les parois de la rainure de `6 mm` (comme les trains en bois) ; gorge de pneu conservée.
+- **Patins captifs « Coaster Hooks » (à trancher)** : en V1 ils s'avancent jusqu'à `|y| = 19,0` entre `z = 4,5` et `7,5`, alors que les flancs d'un rail standard et d'un rail bois sont plats à `|y| = 20` : collision de `1 mm` hors des rails Funky.
+- **Paliers d'essieux / coque (à reconcevoir)** : les paliers du châssis (`|y|` 17,2–20,3) occupent le volume des parois latérales de la coque (`|y|` 17,5–20) : la coque ne peut pas se fermer.
+- **Transmission absente** : le berceau du moteur N20 est longitudinal, aucun renvoi vers l'essieu n'est modélisé.
+- Conséquence : châssis et coque V1 conservés tels quels en attendant une reconception de la locomotive ; roue et pignon portés en CadQuery (`generer_locomotive.py`).
 
 - **Tuile d'action (à trancher)** : les pattes de clipsage (|y| ∈ [8,4 ; 9,85]) chevauchent le plateau central du rail (|y| ≤ 9,75) de `1,35 mm` : la tuile ne peut pas se clipser. Les déplacer dans les rainures bloquerait les roues. Tuile non portée en attendant un nouveau principe de fixation.
 

@@ -266,7 +266,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   const PART_META = {
     'loco_chassis_inferieur.stl': { label: 'Châssis inférieur', color: [0.23, 0.53, 0.92] },
     'loco_coque_superieure_monobloc.stl': { label: 'Coque supérieure', color: [0.92, 0.28, 0.23] },
-    'loco_roue_25_5mm.stl': { label: 'Roue Ø24 / Boudin Ø27,6', color: [0.22, 0.24, 0.28] },
+    'loco_roue_24mm.stl': { label: 'Roue Ø24 sans boudin', color: [0.22, 0.24, 0.28] },
     'loco_pignon_central_essieu.stl': { label: 'Pignon 12 dents Ø16,8', color: [0.96, 0.68, 0.14] },
     'rail_droit_100mm_snapfit.stl': { label: 'Rail droit 100mm Snap-Fit', color: [0.22, 0.68, 0.50] },
     'rail_courbe_45deg_snapfit.stl': { label: 'Rail courbe 45° R=180', color: [0.18, 0.60, 0.66] },
@@ -482,10 +482,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       { key: 'loco_chassis_inferieur.stl', mat: makeModelMat(115+cx, 0, 54.5+cz + e*22, 0, 0), color: PART_META['loco_chassis_inferieur.stl'].color },
       { key: 'loco_coque_superieure_monobloc.stl', mat: makeModelMat(115+cx, 0, 69.5+cz + e*56, 0, 0), color: PART_META['loco_coque_superieure_monobloc.stl'].color },
       { key: 'loco_pignon_central_essieu.stl', mat: makeModelMat(135+cx, -1.5, 71.0+cz + e*10, -90, 0), color: PART_META['loco_pignon_central_essieu.stl'].color },
-      { key: 'loco_roue_25_5mm.stl', mat: makeModelMat(135+cx, 10.05 + e*16, 71.0+cz + e*10, -90, 0), color: PART_META['loco_roue_25_5mm.stl'].color },
-      { key: 'loco_roue_25_5mm.stl', mat: makeModelMat(135+cx, -10.05 - e*16, 71.0+cz + e*10, 90, 0), color: PART_META['loco_roue_25_5mm.stl'].color },
-      { key: 'loco_roue_25_5mm.stl', mat: makeModelMat(181+cx, 10.05 + e*16, 71.0+cz + e*10, -90, 0), color: PART_META['loco_roue_25_5mm.stl'].color },
-      { key: 'loco_roue_25_5mm.stl', mat: makeModelMat(181+cx, -10.05 - e*16, 71.0+cz + e*10, 90, 0), color: PART_META['loco_roue_25_5mm.stl'].color },
+      { key: 'loco_roue_24mm.stl', mat: makeModelMat(135+cx, 10.25 + e*16, 71.0+cz + e*10, -90, 0), color: PART_META['loco_roue_24mm.stl'].color },
+      { key: 'loco_roue_24mm.stl', mat: makeModelMat(135+cx, -10.25 - e*16, 71.0+cz + e*10, 90, 0), color: PART_META['loco_roue_24mm.stl'].color },
+      { key: 'loco_roue_24mm.stl', mat: makeModelMat(181+cx, 10.25 + e*16, 71.0+cz + e*10, -90, 0), color: PART_META['loco_roue_24mm.stl'].color },
+      { key: 'loco_roue_24mm.stl', mat: makeModelMat(181+cx, -10.25 - e*16, 71.0+cz + e*10, 90, 0), color: PART_META['loco_roue_24mm.stl'].color },
     ];
   }
 

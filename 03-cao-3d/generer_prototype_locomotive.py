@@ -299,6 +299,7 @@ def build_loco_shell() -> WatertightMesh:
 
 def main() -> None:
     out_dir = Path(__file__).resolve().parent / "stl"
+    # Roue et pignon : portés en CadQuery (generer_locomotive.py, V2). Châssis et coque à reconcevoir.
     specs = [
         (
             out_dir / "loco_chassis_inferieur.stl",
@@ -309,16 +310,6 @@ def main() -> None:
             out_dir / "loco_coque_superieure_monobloc.stl",
             build_loco_shell(),
             "Projet Trains V1 - Coque Superieure Monobloc 84x40x32mm",
-        ),
-        (
-            out_dir / "loco_roue_25_5mm.stl",
-            build_loco_wheel(),
-            "Projet Trains V1 - Roue Ferroviaire D24mm (Boudin D27.6mm)",
-        ),
-        (
-            out_dir / "loco_pignon_central_essieu.stl",
-            build_loco_pinion(),
-            "Projet Trains V1 - Pignon Central Escalade 12 Dents D16.8mm",
         ),
     ]
 

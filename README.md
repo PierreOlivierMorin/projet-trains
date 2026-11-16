@@ -37,7 +37,8 @@ Concevoir et commercialiser un **système de train jouet modulaire, robuste, mot
   - [`generer_rails.py`](./03-cao-3d/generer_rails.py) : Générateur V2 des pièces de voie : droit, côte, courbe 45°, adaptateur bois, Funky, piliers 25 et 50 mm (`.venv/bin/python`).
   - [`verifier_stl.py`](./03-cao-3d/verifier_stl.py) : Validateur topologique automatique (`--update-viewer` pour rafraîchir le visualiseur).
   - [`generer_prototype_rails.py`](./03-cao-3d/generer_prototype_rails.py) : Générateur V1 restant : tuile d'action (`tuile_action_clipsable.stl`), clipsage à revoir.
-  - [`generer_prototype_locomotive.py`](./03-cao-3d/generer_prototype_locomotive.py) : Génère les 4 pièces de la locomotive V1 (`loco_chassis_inferieur.stl`, `loco_coque_superieure_monobloc.stl`, `loco_roue_25_5mm.stl`, `loco_pignon_central_essieu.stl`).
+  - [`generer_prototype_locomotive.py`](./03-cao-3d/generer_prototype_locomotive.py) : Châssis et coque V1 de la locomotive (`loco_chassis_inferieur.stl`, `loco_coque_superieure_monobloc.stl`), à reconcevoir.
+  - [`generer_locomotive.py`](./03-cao-3d/generer_locomotive.py) : Roue Ø 24 sans boudin et pignon d'escalade (V2 CadQuery).
   - [`generer_visualiseur_html.py`](./03-cao-3d/generer_visualiseur_html.py) : Reconstruit `visualiseur-assemblage.html` à partir des `.STL` générés.
 - `04-electronique-firmware/` *(à venir)* : Schémas électroniques, routage du mini-PCB sur mesure et firmware embarqué.
 - `05-business-et-certifications/` :

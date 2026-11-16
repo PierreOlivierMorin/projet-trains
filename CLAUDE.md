@@ -16,6 +16,8 @@ The CAD is mid-migration from pure-Python meshes (V1) to **CadQuery** (V2, see `
 /opt/homebrew/bin/python3.13 -m venv .venv && .venv/bin/pip install -r requirements.txt   # one-time setup
 .venv/bin/python 03-cao-3d/generer_rails.py         # V2 rails (CadQuery) → stl/*.stl + step/*.step
 python3 03-cao-3d/generer_prototype_rails.py        # V1: action tile only (all other track parts are V2)
+.venv/bin/python 03-cao-3d/generer_locomotive.py   # V2 wheel (no flange) + climbing pinion
+python3 03-cao-3d/generer_prototype_locomotive.py   # V1 chassis + shell only (known collisions, pending redesign)
 python3 03-cao-3d/generer_prototype_locomotive.py   # regenerate the 4 locomotive STLs
 python3 03-cao-3d/verifier_stl.py                   # validate every STL in 03-cao-3d/stl/ (exit 1 on any FAIL)
 python3 03-cao-3d/verifier_stl.py path/to/one.stl   # validate specific file(s)

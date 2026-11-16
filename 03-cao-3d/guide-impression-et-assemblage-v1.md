@@ -25,23 +25,23 @@ Ce guide regroupe les **11 fichiers `.STL`** générés dans [`03-cao-3d/stl/`](
 | [`tuile_action_clipsable.stl`](./stl/tuile_action_clipsable.stl) | `30,0 × 19,7 × 3,2 mm` | Tuile colorée clipsable avec canal central abaissé (`0,4 mm`) | Non |
 | [`rail_funky_cremaillere_captif.stl`](./stl/rail_funky_cremaillere_captif.stl) | `116,5 × 40,0 × 14,0 mm` | Rail cascade : crémaillère (`z=14 mm`), loges acier, glissières 45° | Non |
 
-### Pièces de la Locomotive V1 (script [`generer_prototype_locomotive.py`](./generer_prototype_locomotive.py))
+### Pièces de la Locomotive (roue et pignon : V2 [`generer_locomotive.py`](./generer_locomotive.py) ; châssis et coque : V1 [`generer_prototype_locomotive.py`](./generer_prototype_locomotive.py), à reconcevoir)
 
 | Fichier `.STL` | Dimensions hors-tout | Quantité / loco | Supports |
 | :--- | :--- | :---: | :---: |
 | [`loco_chassis_inferieur.stl`](./stl/loco_chassis_inferieur.stl) | `94,0 × 46,0 × 22,0 mm` | `1` | Oui *(sous le plancher `10,5 mm` entre patins)* |
 | [`loco_coque_superieure_monobloc.stl`](./stl/loco_coque_superieure_monobloc.stl) | `84,0 × 40,0 × 32,0 mm` | `1` | Non *(nez 39° et toit chanfreiné)* |
-| [`loco_roue_25_5mm.stl`](./stl/loco_roue_25_5mm.stl) | `Ø 27,6 × 6,2 mm` | `4` | Non |
+| [`loco_roue_24mm.stl`](./stl/loco_roue_24mm.stl) | `Ø 24,0 × 6,9 mm` | `4` | Non *(V2 : sans boudin, guidée par la rainure)* |
 | [`loco_pignon_central_essieu.stl`](./stl/loco_pignon_central_essieu.stl) | `Ø 16,8 × 3,0 mm` | `1` | Non |
 
 ---
 
 ## 2. Cotes d'engrènement vérifiées (Zéro collision)
 
-L'ensemble roue / pignon / crémaillère / tuile d'action a été calibré pour fonctionner sur **tous** les rails sans frottement :
+L'ensemble roue / pignon / crémaillère a été contrôlé en CadQuery (interférence nulle sur rail standard, engrènement sur rail Funky). La tuile d'action et les patins captifs du châssis V1 présentent des collisions connues (voir [`decisions-cao-v2.md`](./decisions-cao-v2.md) §8) :
 
 - **Fond de rainure de rail** : `z = 9,0 mm` | **Plateau central normal / bois** : `z = 12,0 mm`.
-- **Roue (`loco_roue_25_5mm.stl`)** : bande de roulement **`Ø 24,0 mm`** (`R = 12,0 mm`) et boudin intérieur **`Ø 27,6 mm`** → place l'axe d'essieu à **`z_essieu = 21,0 mm`**.
+- **Roue (`loco_roue_24mm.stl`)** : bande de roulement **`Ø 24,0 mm`** (`R = 12,0 mm`) posée sur le fond de rainure, **sans boudin** (V2), `5 mm` de large dans la rainure de `6 mm` → axe d'essieu à **`z_essieu = 21,0 mm`**.
 - **Pignon central (`loco_pignon_central_essieu.stl`)** : `12` dents, **`Ø extérieur = 16,8 mm`** (`R = 8,4 mm`) → point bas des dents à **`z = 12,6 mm`** :
   - **`+0,6 mm` de garde** au-dessus des rails standards et en bois (`12,0 mm`).
   - **`+0,2 mm` (ou `+0,6–1,0 mm` avec pneu TPU)** au-dessus du canal central abaissé des tuiles d'action (`12,4 mm`).
