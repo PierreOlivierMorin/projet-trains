@@ -32,8 +32,11 @@ Concevoir et commercialiser un **système de train jouet modulaire, robuste, mot
   - [`visualiseur-assemblage.html`](./03-cao-3d/visualiseur-assemblage.html) : Inspecteur WebGL 3D autonome embarquant les 11 vrais fichiers `.STL` (assemblage, vue éclatée, coupes X/Y/Z, filaire).
   - [`plan-developpement-stl-benchmark.md`](./03-cao-3d/plan-developpement-stl-benchmark.md) : Plan de développement STL en 5 niveaux (prompts + contrat d'interface + grille d'évaluation) pour tester un modèle local.
   - [`guide-impression-et-assemblage-v1.md`](./03-cao-3d/guide-impression-et-assemblage-v1.md) : Inventaire des 11 fichiers `.STL`, cotes d'engrènement vérifiées, paramètres de tranchage et protocole de test.
+  - [`decisions-cao-v2.md`](./03-cao-3d/decisions-cao-v2.md) : Décisions de l'itération CAO V2 (CadQuery, finition « jouet en bois premium », circuit de test 8 + ovale, viaduc, banc de pente).
+  - [`cao_commun.py`](./03-cao-3d/cao_commun.py) : Socle CadQuery V2 (contrat d'interface, profil arrondi, Snap-Fit, évidement, export STL + STEP).
+  - [`generer_rails.py`](./03-cao-3d/generer_rails.py) : Générateur V2 des rails (rail droit et rail de côte portés ; `.venv/bin/python`).
   - [`verifier_stl.py`](./03-cao-3d/verifier_stl.py) : Validateur topologique automatique (`--update-viewer` pour rafraîchir le visualiseur).
-  - [`generer_prototype_rails.py`](./03-cao-3d/generer_prototype_rails.py) : Génère les 7 pièces de circuit (`rail_droit_100mm_snapfit.stl`, `rail_courbe_45deg_snapfit.stl`, `rail_cote_100mm_strie.stl`, `adaptateur_rail_bois.stl`, `pilier_verrouillable_duplo.stl`, `tuile_action_clipsable.stl`, `rail_funky_cremaillere_captif.stl`).
+  - [`generer_prototype_rails.py`](./03-cao-3d/generer_prototype_rails.py) : Générateur V1 des pièces de circuit pas encore portées (`rail_courbe_45deg_snapfit.stl`, `adaptateur_rail_bois.stl`, `pilier_verrouillable_duplo.stl`, `tuile_action_clipsable.stl`, `rail_funky_cremaillere_captif.stl`).
   - [`generer_prototype_locomotive.py`](./03-cao-3d/generer_prototype_locomotive.py) : Génère les 4 pièces de la locomotive V1 (`loco_chassis_inferieur.stl`, `loco_coque_superieure_monobloc.stl`, `loco_roue_25_5mm.stl`, `loco_pignon_central_essieu.stl`).
   - [`generer_visualiseur_html.py`](./03-cao-3d/generer_visualiseur_html.py) : Reconstruit `visualiseur-assemblage.html` à partir des `.STL` générés.
 - `04-electronique-firmware/` *(à venir)* : Schémas électroniques, routage du mini-PCB sur mesure et firmware embarqué.

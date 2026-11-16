@@ -50,7 +50,12 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 - **Pont central sur crémaillère « Funky »** : pièce d'extension remplaçant le croisement à niveau, après validation du Test 3.
 - Transition mur 90°, segment de looping, télécommande, courbe 22,5°.
 
-### 8. Ordre de travail
+### 8. Écarts constatés pendant le portage
+- **Languette / prise femelle (corrigé)** : en V1, la crête en V de la languette commençait avant la gorge de la prise (chevauchement ~0,2 mm vers x = 10,9). En V2, la gorge épouse la languette avec `0,20 mm` de jeu à partir de x = 10,2 ; interférence entre deux rails assemblés = 0.
+- **Congés des coins verticaux aux jonctions (retirés)** : leur raccord avec le congé R2 du dessus produisait des facettes défectueuses dans le STL. Coins invisibles une fois assemblés ; à reprendre lors du polissage.
+- **Boudin des roues (à trancher)** : boudin `Ø 27,6 mm` sur essieu à `z = 21,0` → bas du boudin à `z = 7,2 mm`, soit `1,8 mm` sous le fond de rainure (`z = 9,0`). Collision en V1, y compris sur rail bois. À résoudre lors de la refonte de la locomotive.
+
+### 9. Ordre de travail
 1. Socle CadQuery (`cao_commun.py`).
 2. Jauge de calibration (gpt-oss) → **première impression**.
 3. Refonte des 11 pièces existantes.

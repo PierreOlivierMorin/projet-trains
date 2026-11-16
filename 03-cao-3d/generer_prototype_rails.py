@@ -754,17 +754,8 @@ def build_action_tile() -> WatertightMesh:
 
 def main() -> None:
     out_dir = Path(__file__).resolve().parent / "stl"
+    # Rail droit et rail de côte : portés en CadQuery dans generer_rails.py (V2), plus générés ici.
     specs = [
-        (
-            out_dir / "rail_droit_100mm_snapfit.stl",
-            build_straight_or_slope_rail(with_stries=False),
-            "Projet Trains V1 - Rail Droit 100mm Snap-Fit (ecartement 25.5mm)",
-        ),
-        (
-            out_dir / "rail_cote_100mm_strie.stl",
-            build_straight_or_slope_rail(with_stries=True),
-            "Projet Trains V1 - Rail Cote 100mm Micro-Strie (ecartement 25.5mm)",
-        ),
         (
             out_dir / "adaptateur_rail_bois.stl",
             build_wooden_adapter(),

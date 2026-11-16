@@ -10,10 +10,12 @@ Numbered folders follow the project phases (`01-etude-de-marche`, `02-prototype-
 
 ## Commands
 
-Python 3 standard library only — no dependencies, no virtualenv, no build step, no test framework.
+The CAD is mid-migration from pure-Python meshes (V1) to **CadQuery** (V2, see `03-cao-3d/decisions-cao-v2.md`). CadQuery lives in a project virtualenv (`.venv`, Homebrew Python 3.13; the system Python 3.9 can't run it). `verifier_stl.py`, the viewer generator and the V1 scripts stay pure stdlib.
 
 ```bash
-python3 03-cao-3d/generer_prototype_rails.py        # regenerate the 7 track STLs into 03-cao-3d/stl/
+/opt/homebrew/bin/python3.13 -m venv .venv && .venv/bin/pip install -r requirements.txt   # one-time setup
+.venv/bin/python 03-cao-3d/generer_rails.py         # V2 rails (CadQuery) → stl/*.stl + step/*.step
+python3 03-cao-3d/generer_prototype_rails.py        # V1 track parts not yet ported (no longer writes the straight/slope rails)
 python3 03-cao-3d/generer_prototype_locomotive.py   # regenerate the 4 locomotive STLs
 python3 03-cao-3d/verifier_stl.py                   # validate every STL in 03-cao-3d/stl/ (exit 1 on any FAIL)
 python3 03-cao-3d/verifier_stl.py path/to/one.stl   # validate specific file(s)
@@ -25,7 +27,16 @@ python3 03-cao-3d/generer_visualiseur_html.py       # rebuild the viewer only
 
 ## CAD pipeline architecture
 
-`generer_prototype_*.py` → `stl/*.stl` → `verifier_stl.py` → `visualiseur-assemblage.html`
+`generer_*.py` → `stl/*.stl` (+ `step/*.step` for V2) → `verifier_stl.py` → `visualiseur-assemblage.html`
+
+### V2 (CadQuery)
+- **`cao_commun.py` is the interface contract**: rail constants, the rounded rail profile (2D profile with fillets/chamfers via `polygone_arrondi`, then extruded — far more robust than 3D fillets), Snap-Fit female cavity / male connector, ribbed hollow underside, groove-entry chamfers, micro-ridges, and `exporter()` (validity + `Z_min == 0` check, binary STL + STEP). Every part that mates with track must reuse it.
+- Snap-Fit and V-lock geometry are z-dependent; they are built by `solide_par_sections()` — a ruled loft of YZ sections at fixed X stations, which reproduces the V1 piecewise-linear shapes exactly. Keep station lists in sync with the breakpoints of the half-width functions.
+- The female cavity is defined as tongue + `JEU_IMPRESSION` from x = 10.2 (fixes a ~0.2 mm V1 overlap). After changing joint geometry, check that two rails joined end to end have zero intersection volume (`a.intersect(a.translate((L,0,0)))`).
+- 3D fillets that meet the R2 top fillet (e.g. on vertical joint corners) produce non-manifold STL slivers; `verifier_stl.py` catches this. Prefer fillets in the 2D profile.
+- One generator per part family (`generer_rails.py`, …); V1 scripts are retired as their parts get ported.
+
+### V1 (pure Python, being retired)
 
 - **`WatertightMesh`** (in `generer_prototype_rails.py`) is the core of everything. Geometry is built additively from cells (`add_hex`, `add_convex_prism`, `add_quad`, `add_tri`) on vertices snapped to 0.0001 mm. Adding a triangle whose reverse already exists **deletes both** — that is how internal faces between adjacent cells cancel, so solids are unioned by making neighbouring cells share exactly coincident faces. Consequences:
   - Adjacent cells must use identical vertex coordinates on shared faces (same X/Y breakpoints, same `Z_LEVELS`), otherwise the faces do not cancel and the mesh is non-manifold.
