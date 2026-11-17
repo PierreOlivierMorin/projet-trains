@@ -19,7 +19,7 @@ All CAD is **CadQuery** (V2, see `03-cao-3d/decisions-cao-v2.md` and `decisions-
 .venv/bin/python 03-cao-3d/gen_jauge_calibration.py # calibration gauge (written by the local model)
 .venv/bin/python outils/controler_locomotive.py     # loco assembly checks: internal clashes, straight, R=180 curve, Funky rack
 .venv/bin/python outils/controler_jauge.py          # functional checks of the gauge
-.venv/bin/python outils/plan_circuit.py --viaduc 50  # test-circuit layout: closure, overlaps, joint genders, SVG + BOM
+.venv/bin/python outils/plan_circuit.py --viaduc 25  # test-circuit layout (25 mm retained; 50 also plottable): closure, overlaps, joint genders, SVG + BOM
 python3 03-cao-3d/verifier_stl.py                   # validate every STL in 03-cao-3d/stl/ (exit 1 on any FAIL)
 python3 03-cao-3d/verifier_stl.py path/to/one.stl   # validate specific file(s)
 python3 03-cao-3d/verifier_stl.py --update-viewer   # validate, then rebuild visualiseur-assemblage.html

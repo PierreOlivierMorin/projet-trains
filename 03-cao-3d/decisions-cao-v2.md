@@ -35,8 +35,8 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 - **Piliers** : hauteurs fixes `25` et `50 mm` + **rehausse `12,5 mm`** verrouillable (2 étages max). Le pilier 50 mm actuel est conservé (réécrit en CadQuery).
 
 ### 5. Circuit de test
-- **Forme** : 8 inscrit dans un ovale (style coffret classique), **ovale élargi à ~1,1 × 1,6 m** par des droits verticaux aux extrémités. Les extrémités sont partagées entre le 8 et l'ovale ; **4 aiguillages = 2 communications** ; **croisement central à niveau** (pièce en X à 90°).
-- **Viaduc 50 mm** sur un côté droit de l'ovale (4 rampes de chaque côté + tablier sur piliers) : test en conditions réelles des transitions, joints sur piliers, PID en montée et freinage en descente.
+- **Forme** : 8 inscrit dans un ovale (style coffret classique), **ovale élargi à ~1,0 × 1,5 m** (calculé avec le viaduc 25 mm, §11) par des droits verticaux aux extrémités. Les extrémités sont partagées entre le 8 et l'ovale ; **4 aiguillages = 2 communications** ; **croisement central à niveau** (pièce en X à 90°).
+- **Viaduc 25 mm** *(ramené de 50 mm le 17 nov. 2026, voir §11)* sur un côté droit de l'ovale (pied + milieu + tête de chaque côté + tablier sur 2 piliers de 25 mm) : test en conditions réelles des transitions, joints sur piliers, PID en montée et freinage en descente.
 - **Côté opposé** : **gare** (voie de garage, 1 aiguillage + **butoir** = cible du capteur ToF) et **tunnel** décoratif (dégagement ≥ 62,5 mm).
 - Également présents : **tuiles d'action**, **adaptateur rail bois**.
 - **Aiguillages manuels** (levier latéral), versions **gauche et droite** (miroir), logements vides réservés pour servo `SG90` et Mini-PCB `35 × 22 mm`.
@@ -80,11 +80,11 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 
 | Viaduc | Encombrement | Pièces | Filament | Impression |
 | :--- | :--- | :---: | :---: | :---: |
-| 50 mm (décision actuelle) | **1,91 × 1,41 m** | 85 | ~1,55 kg | ~86 h |
-| 25 mm | **1,51 × 1,01 m** | 61 | ~1,11 kg | ~62 h |
+| 50 mm | **1,91 × 1,41 m** | 85 | ~1,55 kg | ~86 h |
+| **25 mm (retenu)** | **1,51 × 1,01 m** | 61 | ~1,11 kg | ~62 h |
 | sans viaduc | 1,21 × 0,71 m | — | — | — |
 
-  Le viaduc de 50 mm dépasse le tapis de 1,2 × 1,8 m visé : la montée à 12,5 % max demande 500 mm de rampe de chaque côté, et le grand côté doit être allongé d'autant, ce qui écarte aussi les extrémités et allonge les diagonales. **Choix à confirmer.** Plans : [`plan-circuit-viaduc50.svg`](./plan-circuit-viaduc50.svg), [`plan-circuit-viaduc25.svg`](./plan-circuit-viaduc25.svg) (nomenclatures dans les `.txt` voisins).
+  Le viaduc de 50 mm dépasse le tapis de 1,2 × 1,8 m visé : la montée à 12,5 % max demande 500 mm de rampe de chaque côté, et le grand côté doit être allongé d'autant, ce qui écarte aussi les extrémités et allonge les diagonales. **Décision (17 nov. 2026) : viaduc 25 mm**, pour tenir sur le tapis ; il suffit à tester transitions, jonctions sur piliers, montée et descente, et le banc de pente couvre les pentes fortes. Le plan 50 mm reste générable (`--viaduc 50`). Plans : [`plan-circuit-viaduc50.svg`](./plan-circuit-viaduc50.svg), [`plan-circuit-viaduc25.svg`](./plan-circuit-viaduc25.svg) (nomenclatures dans les `.txt` voisins).
 
 ### 9. Ordre de travail
 1. Socle CadQuery (`cao_commun.py`).

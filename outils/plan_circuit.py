@@ -14,7 +14,7 @@ Géométrie (repère : centre du croisement à l'origine, X le long de l'ovale) 
 - croisement à niveau à 90° au centre ;
 - viaduc sur le grand côté haut, gare (voie de garage + butoir) et tunnel sur le grand côté bas.
 
-Usage : .venv/bin/python outils/plan_circuit.py [--viaduc 50] [--svg chemin]
+Usage : .venv/bin/python outils/plan_circuit.py [--viaduc 25] [--svg chemin]
 """
 
 from __future__ import annotations
@@ -93,7 +93,7 @@ def courbe(p: Pose, sens: int) -> Piece:
 # ---------------------------------------------------------------------------
 @dataclass
 class Config:
-    viaduc: float = 50.0         # Hauteur du tablier (0 = pas de viaduc)
+    viaduc: float = 25.0         # Hauteur du tablier (0 = pas de viaduc) ; 25 retenu le 17 nov. 2026
     garage_droits: int = 1       # Droits de 100 mm dans la voie de garage avant le butoir
 
 
@@ -421,7 +421,7 @@ def masse(nom: str) -> float:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--viaduc", type=float, default=50.0)
+    ap.add_argument("--viaduc", type=float, default=25.0)
     ap.add_argument("--svg", default=None, help="Défaut : 03-cao-3d/plan-circuit-viaduc<h>.svg")
     args = ap.parse_args()
     cfg = Config(viaduc=args.viaduc)
