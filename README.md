@@ -33,6 +33,7 @@ Concevoir et commercialiser un **système de train jouet modulaire, robuste, mot
   - [`plan-developpement-stl-benchmark.md`](./03-cao-3d/plan-developpement-stl-benchmark.md) : Plan de développement STL en 5 niveaux (prompts + contrat d'interface + grille d'évaluation) pour tester un modèle local.
   - [`guide-impression-et-assemblage-v1.md`](./03-cao-3d/guide-impression-et-assemblage-v1.md) : Inventaire des 11 fichiers `.STL`, cotes d'engrènement vérifiées, paramètres de tranchage et protocole de test.
   - [`decisions-cao-v2.md`](./03-cao-3d/decisions-cao-v2.md) : Décisions de l'itération CAO V2 (CadQuery, finition « jouet en bois premium », circuit de test 8 + ovale, viaduc, banc de pente).
+  - [`decisions-locomotive-v2.md`](./03-cao-3d/decisions-locomotive-v2.md) : Architecture de la locomotive Alpha reconçue (N20 à vis sans fin, 3 vitesses, roues 3,5 mm, coque vapeur, lecteur RFID).
   - [`cao_commun.py`](./03-cao-3d/cao_commun.py) : Socle CadQuery V2 (contrat d'interface, profil arrondi, Snap-Fit, évidement, export STL + STEP).
   - [`generer_rails.py`](./03-cao-3d/generer_rails.py) : Générateur V2 des pièces de voie : droit, côte, courbe 45°, adaptateur bois, Funky, piliers 25 et 50 mm (`.venv/bin/python`).
   - [`verifier_stl.py`](./03-cao-3d/verifier_stl.py) : Validateur topologique automatique (`--update-viewer` pour rafraîchir le visualiseur).

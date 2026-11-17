@@ -59,7 +59,15 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 - **Transmission absente** : le berceau du moteur N20 est longitudinal, aucun renvoi vers l'essieu n'est modélisé.
 - Conséquence : châssis et coque V1 conservés tels quels en attendant une reconception de la locomotive ; roue et pignon portés en CadQuery (`generer_locomotive.py`).
 
-- **Tuile d'action (à trancher)** : les pattes de clipsage (|y| ∈ [8,4 ; 9,85]) chevauchent le plateau central du rail (|y| ≤ 9,75) de `1,35 mm` : la tuile ne peut pas se clipser. Les déplacer dans les rainures bloquerait les roues. Tuile non portée en attendant un nouveau principe de fixation.
+- **Tuile d'action (tranché : remplacée)** : les pattes de clipsage (|y| ∈ [8,4 ; 9,85]) chevauchaient le plateau central du rail (|y| ≤ 9,75) de `1,35 mm`, et la tuile (`30 × 19,7 × 3,2 mm`) tenait dans le cylindre des petites pièces (interdite sous 3 ans). Remplacée par le rail-balise (§10).
+- **Locomotive** : reconçue, voir [`decisions-locomotive-v2.md`](./decisions-locomotive-v2.md).
+
+### 10. Identification des rails par RFID et rails-balises
+- **Une étiquette NFC `NTAG213` (12–15 mm) scellée dans chaque rail** par pause d'impression, sous le plateau central ; étiquettes « on-metal » pour les rails Funky (bandes d'acier).
+- **Fiche autodescriptive** écrite en fabrication (téléphone NFC ou poste d'écriture) : type de rail, angle, action, numéro de série. Reprogrammable par l'application (ex. balise klaxon → arrêt).
+- Usages : la locomotive sait sur quoi elle roule (ralentit avant une courbe en mode Fusée, anticipe un aiguillage), l'application peut reconstituer la carte du circuit.
+- **Rail-balise** (remplace la tuile d'action) : rail droit de `50 mm` à plateau coloré (rouge = arrêt en gare, jaune = klaxon, bleu = ralentir, vert = demi-tour). La couleur est pour l'enfant, l'étiquette commande la loco (capteur couleur supprimé).
+- Coût indicatif à confirmer : `0,10–0,40 $` par étiquette, ~10–25 $ pour un circuit d'environ 70 rails.
 
 ### 9. Ordre de travail
 1. Socle CadQuery (`cao_commun.py`).
