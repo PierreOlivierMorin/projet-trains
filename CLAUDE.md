@@ -19,6 +19,7 @@ All CAD is **CadQuery** (V2, see `03-cao-3d/decisions-cao-v2.md` and `decisions-
 .venv/bin/python 03-cao-3d/gen_jauge_calibration.py # calibration gauge (written by the local model)
 .venv/bin/python outils/controler_locomotive.py     # loco assembly checks: internal clashes, straight, R=180 curve, Funky rack
 .venv/bin/python outils/controler_jauge.py          # functional checks of the gauge
+.venv/bin/python outils/plan_circuit.py --viaduc 50  # test-circuit layout: closure, overlaps, joint genders, SVG + BOM
 python3 03-cao-3d/verifier_stl.py                   # validate every STL in 03-cao-3d/stl/ (exit 1 on any FAIL)
 python3 03-cao-3d/verifier_stl.py path/to/one.stl   # validate specific file(s)
 python3 03-cao-3d/verifier_stl.py --update-viewer   # validate, then rebuild visualiseur-assemblage.html
@@ -44,6 +45,10 @@ python3 03-cao-3d/generer_visualiseur_html.py       # rebuild the viewer only
 - Parts are exported flat for printing (`a_plat`) or in their own axis-Z frame (wheels, gears); `scenes_visualiseur()` writes `scenes-visualiseur.json` with the transforms back to the world frame, which the viewer embeds. When moving a part, update `assemblage()` and `scenes_visualiseur()` together.
 - `MOTEUR` holds *assumed* N20 worm-gearmotor dimensions; only `loco_support_moteur` depends on them, so real measurements change that one part. The gear pair (14 T / 20 T, m 1) and the output-shaft position derive from `ANGLE_ARBRE` and `entraxe()`.
 - Under-floor clearances are driven by the track: floor at z = 12.6 (rail top 12), centre channel |y| ≤ 2.4 up to z = 14.6 (Funky rack at 14), magnets beside the channel over the Funky steel strips.
+
+### Circuit plan (`outils/plan_circuit.py`)
+- Pure 2D composition of pieces as poses (entry joint → exit joint); the curve displacement comes from `cao_commun.deplacement_courbe()`, so changing the curve geometry updates the plan. Checks: exact closure of every joint, no overlap between piece cores (axes ≥ 42 mm apart, piece ends trimmed so butt joints are not flagged), and joint genders per segment between switches/crossing.
+- Joint gender is a real constraint: every rail is F at one end, M at the other, so a figure-8 sharing the oval ends needs two switch variants (trunk F / trunk M) and a crossing with one F-F and one M-M diagonal. Do not assume identical switches.
 
 ### Shared
 - **`verifier_stl.py`** re-reads the binary STLs independently of the generators and checks: manifold edges, no zero-area triangles, positive volume, and `Z_min == 0` (part sits on the print bed). It also prints bounding box and an estimated FDM mass.

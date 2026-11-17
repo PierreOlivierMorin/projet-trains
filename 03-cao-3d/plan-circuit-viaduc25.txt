@@ -1,0 +1,33 @@
+Grands côtés à y = ±421.5 (longueur 700.0) | 4 droit(s) vertical(aux) par extrémité | diagonales 4 × 450 mm + bras de croisement 54.4 mm | viaduc 700 mm
+Encombrement : 1.51 × 1.01 m
+Fermeture : écart max aux raccords 0.0 µm
+Extrémités non raccordées : aucune (hors butoir)
+Chevauchements : aucun
+Genres des jonctions :
+  [OK]    extrémité droite (tronc HD -> tronc BD) : nœuds F/M
+  [OK]    extrémité gauche (tronc BG -> tronc HG) : nœuds F/M
+  [OK]    grand côté haut (sortie HG -> sortie HD) : nœuds F/M
+  [OK]    côté bas, gauche (sortie BG -> tronc gare) : nœuds M/F
+  [OK]    côté bas, droite (sortie gare -> sortie BD) : nœuds M/F
+  [OK]    diagonale 1 (sortie HD -> croisement F) : nœuds M/F
+  [OK]    diagonale 1 (croisement F -> sortie BG) : nœuds F/M
+  [OK]    diagonale 2 (sortie HG -> croisement M) : nœuds F/M
+  [OK]    diagonale 2 (croisement M -> sortie BD) : nœuds M/F
+Nomenclature :
+    1 × aiguillage droit, tronc F
+    2 × aiguillage droit, tronc M
+    2 × aiguillage gauche, tronc F
+    1 × butoir
+    9 × courbe 45° (pièce standard ; parcourue à l'envers en bout d'ovale)
+    1 × croisement 90° (bras 54.4)
+   29 × droit 100
+    4 × droit 50
+    1 × droit d'ajustement 86.7
+    1 × rail-balise jaune (klaxon)
+    1 × rail-balise rouge (arrêt)
+    2 × rampe milieu
+    2 × rampe pied
+    2 × rampe tête
+    1 × tablier 25 mm (2 piliers)
+    2 × pilier 25 mm (sous le tablier)
+Total : 61 pièces, ~1.11 kg de filament, ~62 h d'impression (estimation)

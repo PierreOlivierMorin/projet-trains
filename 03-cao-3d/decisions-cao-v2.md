@@ -69,6 +69,23 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 - **Rail-balise** (remplace la tuile d'action) : rail droit de `50 mm` à plateau coloré (rouge = arrêt en gare, jaune = klaxon, bleu = ralentir, vert = demi-tour). La couleur est pour l'enfant, l'étiquette commande la loco (capteur couleur supprimé).
 - Coût indicatif à confirmer : `0,10–0,40 $` par étiquette, ~10–25 $ pour un circuit d'environ 70 rails.
 
+### 11. Plan du circuit (calculé par `outils/plan_circuit.py`)
+- **Courbe rendue symétrique** : 17,2 mm de droit aux deux bouts (au lieu de 17,2 / 2). Un demi-tour de 4 courbes revient exactement à son abscisse de départ, sans droit d'ajustement. Nouvelle emprise `170,5 × 98,7 mm`.
+- **Aiguillage en « Y »** : voie déviée = courbe standard, voie directe `163,3 mm` (portée de la déviée + 6,6 mm pour que les grands côtés tombent sur un multiple de 50 mm).
+- **Genres sans adaptateur** : aiguillages en deux variantes — *tronc femelle* (sorties mâles) et *tronc mâle* (sorties femelles) — alternées (HD et BG tronc F, HG et BD tronc M, gare tronc F), et croisement à bras **femelle-femelle** sur une diagonale, **mâle-mâle** sur l'autre. Avec des aiguillages tous identiques, il faudrait 6 adaptateurs F-F / M-M.
+- **Toutes les courbes sont la même pièce** : en bout d'ovale elles sont parcourues à l'envers (virage à droite).
+- **Rampes** : pièces de 100 mm en plan (pied +6,25, milieu +12,5, tête +6,25 ; pente max 12,5 %). Leurs jonctions tombent entre deux crans de pilier : elles doivent être **autoportantes** (dessous en coin évidé) ; seul le tablier repose sur 2 piliers.
+- **Une seule pièce sur mesure** sur la voie principale : un droit d'ajustement de `86,7 mm` sur le grand côté bas (la gare y occupe un aiguillage). Croisement : bras de `87,2 mm` (viaduc 50) ou `54,4 mm` (viaduc 25).
+- **Encombrement réel** (fermeture exacte, aucun chevauchement, genres vérifiés) :
+
+| Viaduc | Encombrement | Pièces | Filament | Impression |
+| :--- | :--- | :---: | :---: | :---: |
+| 50 mm (décision actuelle) | **1,91 × 1,41 m** | 85 | ~1,55 kg | ~86 h |
+| 25 mm | **1,51 × 1,01 m** | 61 | ~1,11 kg | ~62 h |
+| sans viaduc | 1,21 × 0,71 m | — | — | — |
+
+  Le viaduc de 50 mm dépasse le tapis de 1,2 × 1,8 m visé : la montée à 12,5 % max demande 500 mm de rampe de chaque côté, et le grand côté doit être allongé d'autant, ce qui écarte aussi les extrémités et allonge les diagonales. **Choix à confirmer.** Plans : [`plan-circuit-viaduc50.svg`](./plan-circuit-viaduc50.svg), [`plan-circuit-viaduc25.svg`](./plan-circuit-viaduc25.svg) (nomenclatures dans les `.txt` voisins).
+
 ### 9. Ordre de travail
 1. Socle CadQuery (`cao_commun.py`).
 2. Jauge de calibration (gpt-oss) → **première impression**.

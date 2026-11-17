@@ -22,7 +22,7 @@ Rails **évidés à nervures** (~40 % de filament en moins), arrondis « jouet e
 | Fichier `.STL` | Dimensions hors-tout | Usage | Supports |
 | :--- | :--- | :--- | :---: |
 | [`rail_droit_100mm_snapfit.stl`](./stl/rail_droit_100mm_snapfit.stl) | `116,5 × 40,0 × 12,0 mm` | Rail droit Snap-Fit + verrouillage vertical 45° | Non |
-| [`rail_courbe_45deg_snapfit.stl`](./stl/rail_courbe_45deg_snapfit.stl) | `159,8 × 88,0 × 12,0 mm` | Courbe 45° à gauche (`R = 180 mm`, 8 pièces = cercle ; retournée = courbe à droite) | Non |
+| [`rail_courbe_45deg_snapfit.stl`](./stl/rail_courbe_45deg_snapfit.stl) | `170,5 × 98,7 × 12,0 mm` | Courbe 45° symétrique (`R = 180 mm`, 17,2 mm de droit aux deux bouts ; 8 pièces = cercle ; parcourue à l'envers = virage à droite) | Non |
 | [`rail_cote_100mm_strie.stl`](./stl/rail_cote_100mm_strie.stl) | `116,5 × 40,0 × 12,0 mm` | Rail de montée à micro-stries (`0,8 mm`) | Non |
 | [`adaptateur_rail_bois.stl`](./stl/adaptateur_rail_bois.stl) | `66,6 × 40,0 × 12,0 mm` | Prise Snap-Fit femelle ↔ cheville mâle bois (`Ø 11,2 mm`) | Non |
 | [`rail_funky_cremaillere_captif.stl`](./stl/rail_funky_cremaillere_captif.stl) | `116,5 × 40,0 × 14,0 mm` | Crémaillère (`z = 14`), loges acier, glissières captives 45° | Non |

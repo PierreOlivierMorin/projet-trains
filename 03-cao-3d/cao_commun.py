@@ -376,11 +376,27 @@ def rail_droit(longueur: float = 100.0, stries: bool = False, evide: bool = True
     return troncon_droit(longueur, stries=stries, evide=evide)
 
 
-def rail_courbe(rayon: float = 180.0, angle_deg: float = 45.0, evide: bool = True) -> cq.Workplane:
-    """Rail courbe à gauche : entrée droite (femelle) de 17,2 mm + arc de rayon `rayon` (axe de voie)
-    + sortie droite de 2 mm portant le connecteur mâle, tangente à l'arc.
+COURBE_DROIT_SORTIE = FEMELLE_LONGUEUR
 
-    Le centre de courbure est en (FEMELLE_LONGUEUR, rayon). La sortie est orientée à `angle_deg`.
+
+def deplacement_courbe(rayon: float = 180.0, angle_deg: float = 45.0) -> tuple[float, float, float]:
+    """(dx, dy, dθ) entre la face d'entrée et la face de sortie d'une courbe à gauche."""
+    a = math.radians(angle_deg)
+    l0, l1 = FEMELLE_LONGUEUR, COURBE_DROIT_SORTIE
+    return (
+        l0 + rayon * math.sin(a) + l1 * math.cos(a),
+        rayon * (1 - math.cos(a)) + l1 * math.sin(a),
+        angle_deg,
+    )
+
+
+def rail_courbe(rayon: float = 180.0, angle_deg: float = 45.0, evide: bool = True) -> cq.Workplane:
+    """Rail courbe à gauche, symétrique : droit de 17,2 mm (prise femelle) + arc de rayon `rayon`
+    (axe de voie) + droit de 17,2 mm portant le connecteur mâle, tangent à l'arc.
+
+    Les deux droits égaux rendent la pièce symétrique : un demi-tour de 4 courbes revient
+    exactement à l'abscisse de départ (aucun droit d'ajustement). Le centre de courbure est en
+    (FEMELLE_LONGUEUR, rayon) ; la sortie est orientée à `angle_deg`.
     """
     x_arc = FEMELLE_LONGUEUR
     entree = troncon_droit(x_arc, femelle=True, male=False, evide=False)
@@ -391,7 +407,7 @@ def rail_courbe(rayon: float = 180.0, angle_deg: float = 45.0, evide: bool = Tru
     if evide:
         arc = arc.cut(_evidement_arc(x_arc, rayon, angle_deg))
 
-    sortie = troncon_droit(2.0, femelle=False, male=True, evide=False)
+    sortie = troncon_droit(COURBE_DROIT_SORTIE, femelle=False, male=True, evide=False)
     a = math.radians(angle_deg)
     sortie = sortie.rotate((0, 0, 0), (0, 0, 1), angle_deg).translate(
         (x_arc + rayon * math.sin(a), rayon - rayon * math.cos(a), 0)

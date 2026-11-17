@@ -365,9 +365,7 @@ def scenes_visualiseur() -> dict:
         {"key": "loco_engrenage_essieu.stl", "t": [X_ESSIEU_AV, ya, Z_ESSIEU], "rx": -90, "e": [0, 8, -8]},
         {"key": "loco_engrenage_moteur.stl", "t": [xo, ya, zo], "rx": -90, "e": [0, 10, 10]},
     ]
-    a = 45.0
-    xa = c.FEMELLE_LONGUEUR + 180.0 * math.sin(math.radians(a)) + 2.0 * math.cos(math.radians(a))
-    ya_ = 180.0 - 180.0 * math.cos(math.radians(a)) + 2.0 * math.sin(math.radians(a))
+    xa, ya_, _ = c.deplacement_courbe()
     voie = [
         {"key": "rail_droit_100mm_snapfit.stl", "t": [-100, 0, 0], "e": [-14, 0, 0]},
         {"key": "rail_droit_100mm_snapfit.stl", "t": [0, 0, 0], "e": [0, 0, 0]},
