@@ -1,6 +1,6 @@
 {
  "assembly": {
-  "titre": "Châssis-test V2 sur rails (droit, droit, Funky, adaptateur bois)",
+  "titre": "Locomotive V2 (châssis-test + bac + coque vapeur) sur rails (droit, droit, Funky, adaptateur bois)",
   "instances": [
    {
     "key": "rail_droit_100mm_snapfit.stl",
@@ -81,16 +81,29 @@
     ]
    },
    {
-    "key": "loco_plateau_piles.stl",
+    "key": "loco_bac_piles.stl",
     "t": [
      0,
      0,
-     -20.0
+     -13.5
     ],
     "e": [
      0,
      0,
-     32
+     30
+    ]
+   },
+   {
+    "key": "loco_coque_vapeur.stl",
+    "t": [
+     0,
+     0,
+     -31.0
+    ],
+    "e": [
+     0,
+     0,
+     70
     ]
    },
    {

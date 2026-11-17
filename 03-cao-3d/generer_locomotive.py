@@ -2,15 +2,17 @@
 """Générateur CadQuery de la locomotive Alpha V2 — mode châssis-test (decisions-locomotive-v2.md).
 
 Pièces :
-- loco_chassis_test           : châssis (paliers fermés, aimant N52 scellé, loge capteur Hall,
-                                crochet avant / anneau arrière, poteaux du plateau piles)
+- loco_chassis_test           : châssis (paliers fermés, aimants N52 scellés, loge capteur Hall,
+                                crochet avant / anneau arrière, poteaux du bac à piles et de la cheminée)
 - loco_roue_24mm              : roue Ø 24 × 3,5 mm bombée, sans boudin, gorge de pneu (×3)
 - loco_roue_24mm_codeur       : même roue avec loge scellée pour aimant Ø 3 × 1 (essieu libre, ×1)
 - loco_pignon_central_essieu  : pignon d'escalade 12 dents (crémaillère Funky)
 - loco_engrenage_essieu       : engrenage 14 dents m1 sur l'essieu moteur
 - loco_engrenage_moteur       : engrenage 20 dents m1 sur l'arbre en D du N20 (multiplie ×1,43)
 - loco_support_moteur         : support du N20 à vis sans fin (cotes MOTEUR à recaler sur le moteur reçu)
-- loco_plateau_piles          : plateau au-dessus des roues pour un boîtier 3×AAA (fixation par sangles)
+- loco_bac_piles              : bac 3×AAA à contacts du commerce, sur 4 poteaux au-dessus de l'engrenage moteur
+- loco_coque_vapeur           : coque soute + cabine + chaudière (lanternes LED, fenêtre ToF, opercule Push & Go,
+                                logement d'interrupteur), accrochée sous le bac et vissée par la cheminée
 
 Repère locomotive : X vers l'avant (origine au milieu des essieux), Y vers la gauche,
 Z depuis la base du rail. Chaque pièce est ensuite posée à plat pour l'impression.
@@ -60,9 +62,34 @@ X_AIMANT = -12.0                    # Entre les essieux, derrière le support mo
 CANAL = (2.4, 14.6)                 # Canal sous le plancher : |y| <= 2,4 libre jusqu'à z = 14,6 (crémaillère à 14)
 PEAU = 0.6
 
-POTEAUX = [(-7.0, 19.0), (-7.0, -19.0), (-38.0, 6.0), (-38.0, -6.0)]
-Z_PLATEAU = 35.0                    # Au-dessus du sommet des roues (z = 33)
-EP_PLATEAU = 2.0
+# Poteaux du bac à piles (x, y, rayon) : vis M3 fraisées depuis le fond du bac
+POTEAUX = [(-6.5, 17.0, 3.0), (-6.5, -17.0, 3.0), (-40.0, 7.0, 2.75), (-40.0, -7.0, 2.75)]
+Z_BAC = 41.5                        # Dessous du bac : au-dessus de l'engrenage moteur (balayage jusqu'à z = 40,3 en x = 2,45)
+EP_BAC = 2.5                        # Fond (fraisures des vis)
+BAC_X = (-48.55, 2.45)              # Avant : 0,5 mm derrière le carter du N20
+BAC_Y = 20.0
+PILE = (10.5, 44.5)                 # AAA (Ø, longueur max CEI)
+Y_PILES = (-11.0, 0.0, 11.0)        # 3 piles en série, sens alternés
+ESPACE_PILES = 46.2                 # Entre faces des lèvres : 44,5 + ressort comprimé ~1,7
+BOUT_BAC = (0.6, 0.8, 1.0)          # Lèvre, fente de contact, paroi extérieure (x)
+Z_HAUT_BAC = 53.5                   # Haut des parois d'about (axe des piles à z = 49,25)
+
+# Interrupteur à glissière SS-12D00 (corps 8,6 × 3,6 × 3,5, levier 4 mm) : cotes à vérifier
+INTERRUPTEUR = {"l": 8.6, "w": 3.6, "h": 3.5, "x": 7.5, "z_bas": 32.5}
+
+# Coque vapeur (soute + cabine + chaudière), posée sur le bac à l'arrière, vissée par la cheminée
+COQUE_Y = 22.0
+COQUE_EP = 1.6
+Z_COQUE_BAS = 24.0                  # Au-dessus de l'anneau d'attelage (20,6) et du pion du véhicule suivant (22)
+X_COQUE_AR = BAC_X[0] - 0.3 - COQUE_EP
+X_COQUE_AV = 42.0
+X_SOUTE_CABINE = -15.0              # Soute à charbon (toit bas) | cabine (toit haut, au-dessus du moteur)
+Z_TOIT_SOUTE = 57.0
+Z_TABLIER = 36.5                    # Tablier de la chaudière (au-dessus des roues avant, z = 33)
+CHAUDIERE = (16.6, 40.0, 55.0)      # Rayon extérieur, axe z, plafond intérieur (méplat sous la cheminée)
+X_CHEMINEE = 35.5
+LEVRE = (2.25, 41.3, 8.0, 18.0)     # Lèvre arrière sous le fond du bac : longueur, z haut, |y| min, |y| max
+JEU_POSE = 1.2                      # Jeu carter / façade de cabine (pose en basculant autour de la lèvre)
 
 # Engrenages (module 1, 20°)
 MODULE = 1.0
@@ -247,11 +274,11 @@ def chassis_test() -> cq.Workplane:
     sol = sol.cut(boite(X_ESSIEU_AR - 2.4, X_ESSIEU_AR + 2.4, ye - 1.7, ye + 0.1,
                         Z_ESSIEU + R_AIMANT_CODEUR - 2.2, 30.5))
 
-    # Poteaux du plateau piles (trou Ø 2,5 pour vis M3 auto-taraudeuse)
-    for px, py in POTEAUX:
-        poteau = cq.Workplane("XY").workplane(offset=Z_SOL_HAUT - 0.1).center(px, py).circle(3.0).extrude(Z_PLATEAU - Z_SOL_HAUT + 0.1)
+    # Poteaux du bac à piles et poteau de la cheminée (trou Ø 2,5 pour vis M3 auto-taraudeuse)
+    for px, py, pr, ph in [p + (Z_BAC,) for p in POTEAUX] + [(X_CHEMINEE, 0.0, 2.8, CHAUDIERE[2])]:
+        poteau = cq.Workplane("XY").workplane(offset=Z_SOL_HAUT - 0.1).center(px, py).circle(pr).extrude(ph - Z_SOL_HAUT + 0.1)
         sol = sol.union(poteau).cut(
-            cq.Workplane("XY").workplane(offset=Z_PLATEAU - 8).center(px, py).circle(1.25).extrude(9)
+            cq.Workplane("XY").workplane(offset=ph - 10).center(px, py).circle(1.25).extrude(11)
         )
 
     # Trous de fixation du support moteur (vis M2 auto-taraudeuses)
@@ -279,7 +306,7 @@ def trous_support() -> list[tuple[float, float]]:
 
 
 # ---------------------------------------------------------------------------
-# Support moteur et plateau piles
+# Support moteur, bac à piles et coque
 # ---------------------------------------------------------------------------
 def boite_moteur() -> tuple[float, float, float, float, float, float]:
     """Enveloppe du réducteur (x0, x1, y0, y1, z0, z1) en repère loco, d'après MOTEUR."""
@@ -310,22 +337,201 @@ def support_moteur() -> cq.Workplane:
     return piece
 
 
-def plateau_piles() -> cq.Workplane:
-    """Plateau à z = 35 sur 4 poteaux ; fentes de sangle pour un boîtier 3×AAA ; dégagement d'engrenage."""
-    p = boite(-45.0, -0.5, -22.0, 22.0, Z_PLATEAU, Z_PLATEAU + EP_PLATEAU).edges("|Z").fillet(3.0)
-    for px, py in POTEAUX:
-        p = p.cut(cq.Workplane("XY").workplane(offset=Z_PLATEAU - 1).center(px, py).circle(1.7).extrude(5))
-    for sx in (-34.0, -14.0):
-        for sy in (-20.0, 20.0):
-            p = p.cut(boite(sx - 1.5, sx + 1.5, sy - 1.0, sy + 1.0, Z_PLATEAU - 1, Z_PLATEAU + 5).translate((0, 0, 0)))
+def bac_piles() -> cq.Workplane:
+    """Bac 3×AAA en série sur 4 poteaux : fond fraisé, nervures de calage, abouts à fentes de contact.
+
+    Contacts du commerce (plaque, ressort, double ressort-plaque) glissés dans les fentes par le haut :
+    avant = simple (pile y = -11) + double (piles 0 et +11) ; arrière = double (-11 et 0) + simple (+11).
+    """
+    x0, x1 = BAC_X
+    z0, zf = Z_BAC, Z_BAC + EP_BAC
+    lev, fen, par = BOUT_BAC
+    ym = Y_PILES[-1] + PILE[0] / 2 + 1.0                    # 17,25 : demi-largeur des abouts
+    bac = boite(x0, x1, -BAC_Y, BAC_Y, z0, zf).edges("|Z").fillet(2.0)
+    bout = lev + fen + par
+    for xa, xb in ((x0, x0 + bout), (x1 - bout, x1)):
+        bac = bac.union(boite(xa, xb, -ym, ym, zf - 0.1, Z_HAUT_BAC))
+    # Fentes des contacts (séparation isolante de 0,8 entre contact simple et contact double)
+    yi = [y - PILE[0] / 2 for y in Y_PILES]
+    sep_av, sep_ar = (yi[1] - 0.8, yi[1] - 0.1), (yi[2] - 0.6, yi[2] + 0.1)
+    for xf, sep in ((x1 - par - fen, sep_av), (x0 + par, sep_ar)):
+        for ya, yb in ((-ym + 0.8, sep[0]), (sep[1], ym - 0.8)):
+            bac = bac.cut(boite(xf, xf + fen, ya, yb, zf, Z_HAUT_BAC + 1))
+    # Fenêtres des lèvres (le ressort ou le téton du contact touche la pile)
+    for xl in (x0 + par + fen - 0.1, x1 - bout - 0.1):
+        for y in Y_PILES:
+            bac = bac.cut(boite(xl, xl + lev + 0.2, y - 3.0, y + 3.0, zf + 1.5, Z_HAUT_BAC + 1))
+    # Encoches de sortie des fils (contacts simples)
+    for xw, y in ((x1 - par - 0.1, Y_PILES[0]), (x0 - 0.1, Y_PILES[2])):
+        bac = bac.cut(boite(xw, xw + par + 0.2, y - 1.0, y + 1.0, Z_HAUT_BAC - 3, Z_HAUT_BAC + 1))
+    # Nervures de calage entre les piles et sur les bords, interrompues aux vis
+    xa, xb = x0 + bout, x1 - bout
+    nervures = [(y - 0.4, y + 0.4, 1.2) for y in (-5.5, 5.5)] + [(s * 16.6, s * 17.4, 3.0) for s in (1,)] + [(-17.4, -16.6, 3.0)]
+    for ya, yb, h in nervures:
+        n = boite(xa, xb, ya, yb, zf - 0.1, zf + h)
+        for px, py, _ in POTEAUX:
+            if ya - 3.5 < py < yb + 3.5:
+                n = n.cut(boite(px - 3.6, px + 3.6, ya - 1, yb + 1, zf - 1, zf + h + 1))
+        bac = bac.union(n)
+    # Vis M3 fraisées (90°) dans les poteaux
+    for px, py, _ in POTEAUX:
+        bac = bac.cut(cq.Workplane("XY").workplane(offset=z0 - 1).center(px, py).circle(1.7).extrude(EP_BAC + 2))
+        cone = cq.Solid.makeCone(1.7, 3.3, 1.6, pnt=cq.Vector(px, py, zf - 1.5))
+        bac = bac.cut(cq.Workplane("XY").add(cone)).cut(
+            cq.Workplane("XY").workplane(offset=zf + 0.09).center(px, py).circle(3.3).extrude(4))
+    return bac
+
+
+def piles() -> cq.Workplane:
+    """Les 3 piles AAA en place (contrôles uniquement)."""
+    d, l = PILE
+    xa = BAC_X[0] + sum(BOUT_BAC) + 0.6
+    zc = Z_BAC + EP_BAC + d / 2 + 0.02
+    p = None
+    for y in Y_PILES:
+        cyl = cq.Workplane("YZ", origin=(xa, 0, 0)).center(y, zc).circle(d / 2).extrude(l)
+        p = cyl if p is None else p.union(cyl)
     return p
+
+
+def _profil_yz(x0: float, x1: float, pts, arcs=()) -> cq.Workplane:
+    """Prisme le long de X d'un polygone (y, z) ; arcs = {indice: point milieu} pour les arcs à 3 points."""
+    w = cq.Workplane("YZ", origin=(x0, 0, 0)).moveTo(*pts[0])
+    arcs = dict(arcs)
+    for i in range(1, len(pts)):
+        w = w.threePointArc(arcs[i], pts[i]) if i in arcs else w.lineTo(*pts[i])
+    return w.close().extrude(x1 - x0)
+
+
+def _chaudiere(x0: float, x1: float, r: float, z_bas: float) -> cq.Workplane:
+    zc = CHAUDIERE[1]
+    return _profil_yz(x0, x1, [(r, z_bas), (r, zc), (-r, zc), (-r, z_bas)], {2: (0, zc + r)})
+
+
+def _cavite_chaudiere(x0: float, x1: float, r: float, z_bas: float) -> cq.Workplane:
+    """Intérieur sans surplomb > 45° : cercle jusqu'à 45°, tangentes à 45°, méplat ponté au plafond."""
+    zc, zp = CHAUDIERE[1], CHAUDIERE[2]
+    a, m = r / math.sqrt(2), (r * math.cos(math.radians(22.5)), r * math.sin(math.radians(22.5)))
+    f = zc + r * math.sqrt(2) - zp
+    pts = [(r, z_bas), (r, zc), (a, zc + a), (f, zp), (-f, zp), (-a, zc + a), (-r, zc), (-r, z_bas)]
+    return _profil_yz(x0, x1, pts, {2: (m[0], zc + m[1]), 6: (-m[0], zc + m[1])})
+
+
+def _cavite_caisse(x0: float, x1: float, z_plafond: float, chanfrein: float = 4.0) -> cq.Workplane:
+    w = COQUE_Y - COQUE_EP
+    c_ = chanfrein
+    pts = [(w, Z_COQUE_BAS - 1), (w, z_plafond - c_), (w - c_, z_plafond), (-w + c_, z_plafond), (-w, z_plafond - c_), (-w, Z_COQUE_BAS - 1)]
+    return _profil_yz(x0, x1, pts)
+
+
+def cotes_coque() -> dict[str, float]:
+    """Cotes de la coque qui dépendent du moteur (à recaler avec MOTEUR)."""
+    xo, _ = position_arbre_moteur()
+    x0, x1, y0, y1, z0, z1 = boite_moteur()
+    haut_carter = z1 + MOTEUR["carter_l"]
+    plafond = haut_carter + 0.6
+    return {
+        "x_cabine_av": xo + MOTEUR["carter_d"] / 2 + JEU_POSE + COQUE_EP,
+        "plafond_cabine": plafond,
+        "toit": plafond + 1.5,
+    }
+
+
+def coque_vapeur() -> cq.Workplane:
+    """Coque « vapeur stylisée » : soute (piles), cabine (moteur), chaudière à tablier et cheminée.
+
+    Imprimée ouverture en bas (z = 24 sur le plateau), sans supports : chanfreins à 45° sous les plafonds,
+    corbeaux à 45° sous le tablier, la lèvre et l'étagère de l'interrupteur ; plafonds pontés.
+    Pose : accrocher la lèvre arrière sous le fond du bac, basculer le nez, visser dans la cheminée (M3).
+    """
+    k = cotes_coque()
+    xa, xc, xs = X_COQUE_AR, k["x_cabine_av"], X_SOUTE_CABINE
+    Y, e, zb = COQUE_Y, COQUE_EP, Z_COQUE_BAS
+    r_ch, zc, zp = CHAUDIERE
+    r_in = r_ch - e
+    w = Y - e
+
+    # --- Volumes extérieurs
+    soute = boite(xa, xs + 1, -Y, Y, zb, Z_TOIT_SOUTE).edges("|Z and <X").fillet(4.0)
+    cabine = boite(xs, xc, -Y, Y, zb, k["toit"]).edges(">Z").fillet(2.0)
+    avant = boite(xc - 3, X_COQUE_AV, -Y, Y, zb, Z_TABLIER).edges("|Z and >X").fillet(3.0)
+    chaudiere = _chaudiere(xc - 1, X_COQUE_AV, r_ch, Z_TABLIER - 0.1)
+    cheminee = (cq.Workplane("XY").workplane(offset=zc).center(X_CHEMINEE, 0).circle(5.0).extrude(k["toit"] - 2.5 - zc)
+                .union(cq.Workplane("XY").add(cq.Solid.makeCone(5.0, 7.0, 2.0, pnt=cq.Vector(X_CHEMINEE, 0, k["toit"] - 2.5))))
+                .union(cq.Workplane("XY").workplane(offset=k["toit"] - 0.5).center(X_CHEMINEE, 0).circle(7.0).extrude(0.5)))
+    coque = soute.union(cabine).union(avant).union(chaudiere).union(cheminee)
+    for s in (1, -1):    # Lanternes (LED Ø 5) aux coins du tablier
+        lanterne = boite(35.5, 41.0, *sorted((s * 15.5, s * 21.0)), Z_TABLIER - 0.1, Z_TABLIER + 7.5).edges(">Z").fillet(1.0)
+        coque = coque.union(lanterne)
+
+    # --- Cavités
+    coque = coque.cut(_cavite_caisse(xa + e, xs + e, Z_TOIT_SOUTE - 1.7))
+    coque = coque.cut(_cavite_caisse(xs + e, xc - e, k["plafond_cabine"]))
+    pts = [(w, zb - 1), (w, Z_TABLIER - 1.5 - (w - r_in)), (r_in, Z_TABLIER - 1.5), (-r_in, Z_TABLIER - 1.5),
+           (-w, Z_TABLIER - 1.5 - (w - r_in)), (-w, zb - 1)]
+    coque = coque.cut(_profil_yz(xc - e, X_COQUE_AV - 2.5, pts))          # Sous le tablier (corbeaux à 45°)
+    coque = coque.cut(_cavite_chaudiere(xc - e, X_COQUE_AV - e, r_in, zb - 1))
+
+    # Cheminée : alésage de la tête de vis (appui sur 1,6 mm de plafond) + passage M3
+    coque = coque.cut(cq.Workplane("XY").workplane(offset=zp + e).center(X_CHEMINEE, 0).circle(3.1).extrude(10))
+    coque = coque.cut(cq.Workplane("XY").workplane(offset=zp - 1).center(X_CHEMINEE, 0).circle(1.7).extrude(e + 2))
+    # Lanternes : trou de LED Ø 5,2 vers l'avant + passage de fils Ø 3 vers la chaudière
+    for s in (1, -1):
+        coque = coque.cut(cq.Workplane("YZ", origin=(35.0, 0, 0)).center(s * 18.3, Z_TABLIER + 3.6).circle(2.6).extrude(7.5))
+        coque = coque.cut(cylindre_y(37.5, Z_TABLIER + 3.6, 1.5, *sorted((s * 13.5, s * 18.3))))
+    # Fenêtre du capteur ToF VL53L0X dans la traverse avant (décalée à gauche du poteau de cheminée)
+    coque = coque.cut(boite(X_COQUE_AV - 3, X_COQUE_AV + 1, 7.0, 13.0, 26.5, 30.5))
+    # Bouton Push & Go : opercule de 0,4 mm sur le dessus de la chaudière, à percer en mode Alpha
+    coque = coque.cut(cq.Workplane("XY").workplane(offset=zp - 1).center(25.0, 0).circle(3.5).extrude(r_ch + zc - zp + 1 - 0.4))
+    # Fenêtres décoratives (creux de 0,8) : cabine côtés + façade de cabine au-dessus de la chaudière
+    for s in (1, -1):
+        for fx in ((xs + 2.5, xs + 13.5), (xs + 16.5, xc - 4.0)):
+            creux = (cq.Workplane("XZ", origin=(0, s * Y + s * 0.01, 0)).center((fx[0] + fx[1]) / 2, 51.0)
+                     .rect(fx[1] - fx[0], 9.0).extrude(0.81 if s > 0 else -0.81))
+            coque = coque.cut(creux)
+        coque = coque.cut(cq.Workplane("YZ", origin=(xc - 0.8, 0, 0)).center(s * 11.0, k["toit"] - 3.8).circle(2.5).extrude(1.0))
+
+    # --- Lèvre arrière (sous le fond du bac), avec corbeau à 45°
+    ll, lz, ly0, ly1 = LEVRE
+    for s in (1, -1):
+        ya, yb = sorted((s * ly0, s * ly1))
+        coque = coque.union(boite(xa + e - 0.1, xa + e + ll, ya, yb, lz - 2.2, lz))
+        corbeau = (cq.Workplane("XZ", origin=(0, yb, 0)).polyline(
+            [(xa + e - 0.1, lz - 2.2), (xa + e + ll, lz - 2.2), (xa + e - 0.1, lz - 2.2 - ll - 0.1)]).close().extrude(yb - ya))
+        coque = coque.union(corbeau)
+
+    # --- Logement de l'interrupteur (flanc droit, cabine) : fente du levier, glissières, étagère
+    i = INTERRUPTEUR
+    xi, zi0 = i["x"], i["z_bas"]
+    yw = -w
+    coque = coque.cut(boite(xi - 1.0, xi + 1.0, -Y - 1, yw + 0.1, zi0 + i["l"] / 2 - 2.25, zi0 + i["l"] / 2 + 2.25))
+    yi1 = yw + i["h"] + 0.5
+    g0, g1 = i["w"] / 2 + 0.15, i["w"] / 2 + 1.35
+    for s in (1, -1):
+        coque = coque.union(boite(*sorted((xi + s * g0, xi + s * g1)), yw - 0.1, yi1, zi0 - 1.0, zi0 + i["l"] + 0.1))
+        coque = coque.union(boite(*sorted((xi + s * g0, xi + s * (g0 - 0.6))), yi1 - 0.5, yi1, zi0 - 1.0, zi0 + i["l"] + 0.1))
+    coque = coque.union(boite(xi - g1, xi + g1, yw - 0.1, yi1, zi0 - 1.0, zi0))
+    corbeau = (cq.Workplane("YZ", origin=(xi - g1, 0, 0)).polyline(
+        [(yw - 0.1, zi0 - 1.0), (yi1, zi0 - 1.0), (yw - 0.1, zi0 - 1.0 - (yi1 - yw))]).close().extrude(2 * g1))
+    return coque.union(corbeau)
+
+
+def interrupteur() -> cq.Workplane:
+    """Corps de l'interrupteur en place (contrôles uniquement)."""
+    i = INTERRUPTEUR
+    yw = -(COQUE_Y - COQUE_EP)
+    return boite(i["x"] - i["w"] / 2, i["x"] + i["w"] / 2, yw + 0.02, yw + i["h"], i["z_bas"] + 0.02, i["z_bas"] + i["l"])
+
+
+PIVOT_POSE = (X_COQUE_AR + COQUE_EP + LEVRE[0], LEVRE[1])   # Arête de la lèvre, autour de laquelle on bascule la coque
 
 
 # ---------------------------------------------------------------------------
 # Assemblage (repère loco) — pour les contrôles
 # ---------------------------------------------------------------------------
 def assemblage() -> dict[str, cq.Workplane]:
-    pieces: dict[str, cq.Workplane] = {"chassis": chassis_test(), "support": support_moteur(), "plateau": plateau_piles()}
+    pieces: dict[str, cq.Workplane] = {"chassis": chassis_test(), "support": support_moteur(), "bac": bac_piles(),
+                                       "coque": coque_vapeur(), "interrupteur": interrupteur()}
     y_ext = Y_ROUE_INT + ROUE_LARGEUR
     for nom, xe in (("av", X_ESSIEU_AV), ("ar", X_ESSIEU_AR)):
         base = roue(codeur=(nom == "ar"))
@@ -343,7 +549,7 @@ def assemblage() -> dict[str, cq.Workplane]:
     )
     pieces["moteur"] = moteur
     pieces["arbre_moteur"] = cylindre_y(xo, zo, MOTEUR["arbre_d"] / 2, y1 - 0.01, y1 + MOTEUR["arbre_l"])
-    pieces["piles"] = boite(-44.5, -0.5, -15.75, 15.75, Z_PLATEAU + EP_PLATEAU, Z_PLATEAU + EP_PLATEAU + 10.5)
+    pieces["piles"] = piles()
     return pieces
 
 
@@ -356,7 +562,8 @@ def scenes_visualiseur() -> dict:
     loco = [
         {"key": "loco_chassis_test.stl", "t": [0, 0, Z_SOL_BAS], "e": [0, 0, 0]},
         {"key": "loco_support_moteur.stl", "t": [0, 0, Z_SOL_HAUT], "e": [0, -12, 18]},
-        {"key": "loco_plateau_piles.stl", "t": [0, 0, Z_PLATEAU], "e": [0, 0, 32]},
+        {"key": "loco_bac_piles.stl", "t": [0, 0, Z_BAC], "e": [0, 0, 30]},
+        {"key": "loco_coque_vapeur.stl", "t": [0, 0, Z_COQUE_BAS], "e": [0, 0, 70]},
         {"key": "loco_roue_24mm.stl", "t": [X_ESSIEU_AV, y_ext, Z_ESSIEU], "rx": 90, "e": [0, 16, 0]},
         {"key": "loco_roue_24mm.stl", "t": [X_ESSIEU_AV, -y_ext, Z_ESSIEU], "rx": -90, "e": [0, -16, 0]},
         {"key": "loco_roue_24mm_codeur.stl", "t": [X_ESSIEU_AR, y_ext, Z_ESSIEU], "rx": 90, "e": [0, 16, 0]},
@@ -385,7 +592,7 @@ def scenes_visualiseur() -> dict:
     for inst in voie + loco + circuit:
         inst["t"][2] -= 55.0
     return {
-        "assembly": {"titre": "Châssis-test V2 sur rails (droit, droit, Funky, adaptateur bois)",
+        "assembly": {"titre": "Locomotive V2 (châssis-test + bac + coque vapeur) sur rails (droit, droit, Funky, adaptateur bois)",
                      "instances": voie + loco},
         "circuit": {"titre": "Voie V2 : droit, côte striée, droit, 2 courbes 45°, piliers 25 et 50 mm",
                     "instances": circuit},
@@ -403,8 +610,10 @@ def main() -> None:
     c.exporter(engrenage_essieu(), "loco_engrenage_essieu")
     c.exporter(engrenage_moteur(), "loco_engrenage_moteur")
     c.exporter(a_plat(support_moteur()), "loco_support_moteur")
-    plateau = plateau_piles()
-    c.exporter(a_plat(plateau), "loco_plateau_piles")
+    c.exporter(a_plat(bac_piles()), "loco_bac_piles")
+    c.exporter(a_plat(coque_vapeur()), "loco_coque_vapeur")
+    k = cotes_coque()
+    print(f"Coque : toit à z = {k['toit']:.2f} (tunnel 62,5), façade de cabine en x = {k['x_cabine_av']:.2f}")
     import json
     (c.DOSSIER_CAO / "scenes-visualiseur.json").write_text(
         json.dumps(scenes_visualiseur(), ensure_ascii=False, indent=1), encoding="utf-8"

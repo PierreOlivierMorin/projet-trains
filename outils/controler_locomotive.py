@@ -8,6 +8,8 @@
    châssis rigide orienté selon la corde) : aucune pièce ne doit toucher le rail, sauf le contact
    roue / fond de rainure (vérifié en relevant la loco de 0,02 mm).
 4. Même test en courbe avec des roues de 5 mm, pour confirmer le coincement qui a motivé 3,5 mm.
+5. Coque : hauteur sous le gabarit du tunnel, et pose en basculant autour de la lèvre arrière
+   (aucune interférence de 0,5° à 20°).
 
 Usage : .venv/bin/python outils/controler_locomotive.py
 """
@@ -28,7 +30,8 @@ PERMIS = {
         ("tige_av", "roue_av_g"), ("tige_av", "roue_av_d"), ("tige_ar", "roue_ar_g"), ("tige_ar", "roue_ar_d"),
         ("tige_av", "pignon"), ("tige_av", "engr_essieu"), ("engr_essieu", "engr_moteur"),
         ("arbre_moteur", "engr_moteur"), ("arbre_moteur", "moteur"), ("moteur", "support"),
-        ("plateau", "chassis"),
+        ("bac", "chassis"),          # Fond du bac posé sur les poteaux
+        ("coque", "chassis"),        # Plafond de chaudière posé sur le poteau de cheminée
     ]
 }
 ok = True
@@ -79,6 +82,18 @@ def main() -> int:
     verdict(z_min[bas] >= c.RAIL_HAUTEUR + 0.5, f"point le plus bas hors roues : {bas} à z = {z_min[bas]:.2f} (rail à 12)")
     z_max = max(v.val().BoundingBox().zmax for v in pieces.values())
     print(f"[INFO]  hauteur totale (piles comprises) : {z_max:.1f} mm")
+
+    print("--- Coque")
+    verdict(z_max <= 61.5, f"hauteur {z_max:.2f} mm <= 61,5 (tunnel 62,5)")
+    px, pz = g.PIVOT_POSE
+    reste = {k: v for k, v in pieces.items() if k not in ("coque", "interrupteur")}   # L'interrupteur suit la coque
+    for angle in (0.5, 1, 2, 4, 7, 10, 15, 20):
+        bascule = pieces["coque"].rotate((px, 0, pz), (px, 1, pz), -angle)
+        gene = {k: round(vol(bascule.intersect(v)), 3) for k, v in reste.items()}
+        gene = {k: t for k, t in gene.items() if t > 1e-3}
+        verdict(not gene, f"pose : coque basculée de {angle}° autour de la lèvre sans interférence {gene or ''}")
+    nez = pieces["coque"].rotate((px, 0, pz), (px, 1, pz), -5).val().BoundingBox().zmin
+    verdict(nez > g.Z_COQUE_BAS - 1, "sens de bascule : nez relevé")
 
     print("--- Sur rail droit")
     droit = c.rail_droit(100).union(c.rail_droit(100).translate((100, 0, 0))).translate((-100, 0, 0))

@@ -269,7 +269,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   const PART_META = {
     'loco_chassis_test.stl': { label: 'Châssis-test loco V2', color: [0.23, 0.53, 0.92] },
     'loco_support_moteur.stl': { label: 'Support moteur N20 (provisoire)', color: [0.55, 0.55, 0.62] },
-    'loco_plateau_piles.stl': { label: 'Plateau piles 3×AAA', color: [0.92, 0.28, 0.23] },
+    'loco_bac_piles.stl': { label: 'Bac à piles 3×AAA (contacts)', color: [0.92, 0.55, 0.20] },
+    'loco_coque_vapeur.stl': { label: 'Coque vapeur (soute, cabine, chaudière)', color: [0.75, 0.22, 0.18] },
     'loco_roue_24mm_codeur.stl': { label: 'Roue codeur (aimant Ø3)', color: [0.32, 0.30, 0.40] },
     'loco_engrenage_essieu.stl': { label: 'Engrenage essieu 14 dents', color: [0.96, 0.80, 0.30] },
     'loco_engrenage_moteur.stl': { label: 'Engrenage moteur 20 dents', color: [0.98, 0.58, 0.20] },
@@ -282,6 +283,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     'adaptateur_rail_bois.stl': { label: 'Adaptateur rail bois', color: [0.78, 0.60, 0.36] },
     'pilier_verrouillable_duplo.stl': { label: 'Pilier H=50mm gros blocs', color: [0.92, 0.52, 0.18] },
     'pilier_verrouillable_25mm.stl': { label: 'Pilier H=25mm gros blocs', color: [0.95, 0.62, 0.28] },
+    'aiguillage_gauche_tronc_f.stl': { label: 'Aiguillage gauche (tronc F)', color: [0.20, 0.62, 0.58] },
+    'aiguillage_droit_tronc_m.stl': { label: 'Aiguillage droit (tronc M)', color: [0.24, 0.66, 0.62] },
+    'aiguillage_droit_tronc_f.stl': { label: 'Aiguillage droit (tronc F, gare)', color: [0.28, 0.70, 0.66] },
+    'aiguillage_lame_gauche.stl': { label: 'Lame d\'aiguillage gauche', color: [0.95, 0.75, 0.25] },
+    'aiguillage_lame_droite.stl': { label: 'Lame d\'aiguillage droite', color: [0.95, 0.75, 0.25] },
+    'aiguillage_levier.stl': { label: 'Levier d\'aiguillage', color: [0.90, 0.35, 0.30] },
     'jauge_calibration_tolerances.stl': { label: 'Jauge de calibration (jeux + perçages)', color: [0.85, 0.85, 0.30] },
   };
 

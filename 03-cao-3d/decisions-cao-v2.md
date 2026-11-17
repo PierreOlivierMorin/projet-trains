@@ -39,7 +39,7 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 - **Viaduc 25 mm** *(ramené de 50 mm le 17 nov. 2026, voir §11)* sur un côté droit de l'ovale (pied + milieu + tête de chaque côté + tablier sur 2 piliers de 25 mm) : test en conditions réelles des transitions, joints sur piliers, PID en montée et freinage en descente.
 - **Côté opposé** : **gare** (voie de garage, 1 aiguillage + **butoir** = cible du capteur ToF) et **tunnel** décoratif (dégagement ≥ 62,5 mm).
 - Également présents : **tuiles d'action**, **adaptateur rail bois**.
-- **Aiguillages manuels** (levier latéral), versions **gauche et droite** (miroir), logements vides réservés pour servo `SG90` et Mini-PCB `35 × 22 mm`.
+- **Aiguillages manuels** (levier latéral), versions **gauche et droite** (miroir), logements vides réservés pour servo `SG90` et Mini-PCB `35 × 22 mm` *(servo et PCB ne tiennent pas dans les 12 mm du rail : voir §8, boîtier latéral)*.
 - **Plan du circuit vu de dessus** généré avant les nouvelles pièces : vérification mathématique de la fermeture des boucles, nomenclature, temps et filament estimés, besoin éventuel d'un **demi-droit 50 mm**.
 
 ### 6. Banc de pente réglable (instrument de test)
@@ -60,6 +60,13 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 - Conséquence : châssis et coque V1 conservés tels quels en attendant une reconception de la locomotive ; roue et pignon portés en CadQuery (`generer_locomotive.py`).
 
 - **Tuile d'action (tranché : remplacée)** : les pattes de clipsage (|y| ∈ [8,4 ; 9,85]) chevauchaient le plateau central du rail (|y| ≤ 9,75) de `1,35 mm`, et la tuile (`30 × 19,7 × 3,2 mm`) tenait dans le cylindre des petites pièces (interdite sous 3 ans). Remplacée par le rail-balise (§10).
+- **Aiguillages (conçus le 17 nov. 2026, `generer_aiguillages.py`)** :
+  - **Lame pivotante talonnable** au lieu d'un simple volet : une seule lame, dans la rainure intérieure (l'essieu rigide fait suivre l'autre roue). Pivot sur l'îlot entre rainures (`x = 80`, îlot de 6 mm), débattement `8°`. Un train qui arrive par la branche fermée pousse la lame sous `8°` (depuis la directe) ou `14–22°` (depuis la déviée) et la retourne, comme les aiguillages en bois : pas de déraillement si l'enfant oublie le levier.
+  - La lame est tournée sous le levier par un tenon carré qui traverse le fond de rainure ; le levier, emmanché dessous, sort par une lumière du flanc opposé à la déviée (palette verticale). Même levier à gauche et à droite.
+  - Pointe tronquée à `0,8 mm` d'épaisseur et noyée de `0,6 mm` dans la paroi d'appui (pas d'arête offerte à la roue).
+  - **Servo `SG90` et Mini-PCB** : le servo (`~23 × 12 × 22 mm`) est plus haut que le rail (12 mm). La motorisation se fera par un **boîtier latéral** accroché au flanc, côté levier, qui entraîne la palette ; le corps n'a donc pas de logement interne.
+  - Lèvres de rainure **vives** dans la partie centrale (congés conservés aux trois bouts de jonction).
+  - Pas encore de cran de maintien de la lame (frottement seul) : à évaluer à l'impression.
 - **Locomotive** : reconçue, voir [`decisions-locomotive-v2.md`](./decisions-locomotive-v2.md).
 
 ### 10. Identification des rails par RFID et rails-balises
@@ -91,4 +98,4 @@ Ce document consigne les décisions prises pour la deuxième itération CAO : pa
 2. Jauge de calibration (gpt-oss) → **première impression**.
 3. Refonte des 11 pièces existantes.
 4. Plan du circuit vu de dessus.
-5. Nouvelles pièces : butoir (gpt-oss), wagon, rampes ×3, aiguillages G/D, croisement, pilier 25 + rehausse, banc de pente, tunnel.
+5. Nouvelles pièces : aiguillages G/D → *fait* ; butoir (gpt-oss), wagon, rampes ×3, croisement, pilier 25 + rehausse, banc de pente, tunnel.

@@ -15,9 +15,11 @@ All CAD is **CadQuery** (V2, see `03-cao-3d/decisions-cao-v2.md` and `decisions-
 ```bash
 /opt/homebrew/bin/python3.13 -m venv .venv && .venv/bin/pip install -r requirements.txt   # one-time setup
 .venv/bin/python 03-cao-3d/generer_rails.py         # V2 rails (CadQuery) → stl/*.stl + step/*.step
-.venv/bin/python 03-cao-3d/generer_locomotive.py   # test-chassis loco parts + scenes-visualiseur.json
+.venv/bin/python 03-cao-3d/generer_locomotive.py   # loco parts (chassis, tray, steam shell…) + scenes-visualiseur.json
+.venv/bin/python 03-cao-3d/generer_aiguillages.py   # manual switches (L/R, trunk F/M) + blade + lever
 .venv/bin/python 03-cao-3d/gen_jauge_calibration.py # calibration gauge (written by the local model)
-.venv/bin/python outils/controler_locomotive.py     # loco assembly checks: internal clashes, straight, R=180 curve, Funky rack
+.venv/bin/python outils/controler_locomotive.py     # loco checks: internal clashes, shell height + tilt-on fitting, straight, R=180 curve, Funky rack
+.venv/bin/python outils/controler_aiguillage.py     # switch checks: joints, blade/lever clearance, wheel routing in both blade positions
 .venv/bin/python outils/controler_jauge.py          # functional checks of the gauge
 .venv/bin/python outils/plan_circuit.py --viaduc 25  # test-circuit layout (25 mm retained; 50 also plottable): closure, overlaps, joint genders, SVG + BOM
 python3 03-cao-3d/verifier_stl.py                   # validate every STL in 03-cao-3d/stl/ (exit 1 on any FAIL)
@@ -43,8 +45,13 @@ python3 03-cao-3d/generer_visualiseur_html.py       # rebuild the viewer only
 ### Locomotive (`generer_locomotive.py`)
 - Loco frame: X forward with origin midway between axles (front/driven axle x = +23, rear/free axle x = −23), Z from rail base (axles at z = 21). `assemblage()` returns every part placed in that frame; `outils/controler_locomotive.py` uses it to check pairwise clashes (with an allow-list for press fits and meshing gears) and to place the loco on a straight rail, on a R = 180 curve (axles on the track centreline, rigid chassis along the chord) and on Funky rails.
 - Parts are exported flat for printing (`a_plat`) or in their own axis-Z frame (wheels, gears); `scenes_visualiseur()` writes `scenes-visualiseur.json` with the transforms back to the world frame, which the viewer embeds. When moving a part, update `assemblage()` and `scenes_visualiseur()` together.
-- `MOTEUR` holds *assumed* N20 worm-gearmotor dimensions; only `loco_support_moteur` depends on them, so real measurements change that one part. The gear pair (14 T / 20 T, m 1) and the output-shaft position derive from `ANGLE_ARBRE` and `entraxe()`.
+- `MOTEUR` holds *assumed* N20 worm-gearmotor dimensions; `loco_support_moteur` and the shell (`cotes_coque()`: cab front and roof height follow the motor can) depend on them, so real measurements change those two parts — the roof must stay ≤ 61.5 (tunnel 62.5), checked. The gear pair (14 T / 20 T, m 1) and the output-shaft position derive from `ANGLE_ARBRE` and `entraxe()`.
+- Batteries: `loco_bac_piles` (3×AAA in series, off-the-shelf contacts in slots) sits on 4 posts at z = 41.5, above the motor gear's swept circle; the space below it is the future electronics bay. The shell (`loco_coque_vapeur`: bunker, cab over the motor, boiler) hooks a rear lip under the tray and is screwed through the chimney into a tall chassis post; `PIVOT_POSE` is the lip edge the checker tilts it around (0.5–20°) to prove it can be fitted. The slide switch is mounted in the shell, so it is excluded from that tilt check.
 - Under-floor clearances are driven by the track: floor at z = 12.6 (rail top 12), centre channel |y| ≤ 2.4 up to z = 14.6 (Funky rack at 14), magnets beside the channel over the Funky steel strips.
+
+### Switches (`generer_aiguillages.py`)
+- Built in the left-hand frame and mirrored for right-hand. The centre is a union of a straight and a curved body whose lip fillets are dropped (re-cut grooves through a fillet give degenerate STL facets); the three 17.2 mm joint ends come from `troncon_droit` and keep them. `L_DIRECTE` must equal `plan_circuit.L_AIG` (checked).
+- One pivoting, trailable blade in the inner groove; its plan shape is `S ∩ rot(C, -LAME_ANGLE)` (allowed zone in the straight position ∩ allowed zone in the diverging position), so moving `PIVOT`/`LAME_ANGLE` reshapes it automatically. Its pocket in the body is the union of swept positions.
 
 ### Circuit plan (`outils/plan_circuit.py`)
 - Pure 2D composition of pieces as poses (entry joint → exit joint); the curve displacement comes from `cao_commun.deplacement_courbe()`, so changing the curve geometry updates the plan. Checks: exact closure of every joint, no overlap between piece cores (axes ≥ 42 mm apart, piece ends trimmed so butt joints are not flagged), and joint genders per segment between switches/crossing.
@@ -70,6 +77,7 @@ Dimensions and part lists are duplicated across several files. When a part or a 
 
 - `README.md` (structure section lists every script by name),
 - `03-cao-3d/guide-impression-et-assemblage-v1.md` (inventory with dimensions, print pauses, hardware list, checked clearances, test protocol),
+- `03-cao-3d/plan-assemblage-et-achats.md` (shopping list with specs/quantities, print order, step-by-step assembly incl. battery-contact layout),
 - `03-cao-3d/decisions-cao-v2.md` / `decisions-locomotive-v2.md` (V2 decisions and the deviations found while implementing them),
 - `02-prototype-v1/decisions-design-v1.md` (locked V1 design decisions — treat as the specification; do not change a decision without the user asking),
 - `05-business-et-certifications/analyse-couts-de-production-bom.md` if print mass/volume or the BOM is affected,

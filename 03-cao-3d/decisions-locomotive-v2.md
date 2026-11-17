@@ -50,9 +50,13 @@ La locomotive V1 ne pouvait pas être portée telle quelle (voir [`decisions-cao
 - **Attelages relevés** (plaque du crochet à `z = 14,6`) pour passer au-dessus de la crémaillère.
 - **Bande de roulement plate à chanfreins** au lieu de bombée : la gorge du pneu, au centre, supprimait le sommet du bombé. Les chanfreins de `0,4 mm` suffisent en courbe (contrôle CadQuery : 3,5 mm passe, 5 mm coince).
 - **Support moteur provisoire** : cotes du N20 supposées (`MOTEUR` dans `generer_locomotive.py`) ; seule cette pièce est à régénérer après mesure du moteur reçu.
+- **Bac à piles intégré au lieu d'un boîtier du commerce** : un boîtier 3×AAA fait `~53 × 38 × 13 mm` et ne tient pas entre le carter du moteur (`x = 2,95`) et l'arrière. Le bac `loco_bac_piles` (`51 × 40 mm`) reçoit des contacts du commerce (1 ressort, 1 plaque, 2 doubles) dans des fentes ; il est **relevé à `z = 41,5`** pour passer au-dessus de l'engrenage moteur, ce qui libère dessous la **baie électronique** du mode Alpha. La coque déborde de `6,5 mm` derrière le châssis.
+- **Coque vapeur = trappe vissée** *(§6)* : plutôt qu'une trappe de toit (pas de place pour une vis entre les piles et le toit sous `61 mm`), toute la coque se retire : lèvre arrière accrochée sous le bac, **vis M3 cachée dans la cheminée** (outil nécessaire, conforme EN 71). Silhouette : soute à charbon (toit `57`), **cabine au-dessus du moteur** (toit `60,9`, recalé sur `MOTEUR`), chaudière à tablier et cheminée. Le dôme initialement envisagé sur le moteur a été abandonné (il se serait encastré dans la cabine).
+- **Interrupteur à glissière** `SS-12D00` dans un logement du flanc droit de la cabine (le boîtier de piles n'en fournit plus).
+- **Réservations Alpha dans la coque** : fenêtre ToF dans la traverse avant, **décalée à `y = +10` et relevée à `z = 28,5`** (le poteau de cheminée occupe le centre, la traverse commence à `z = 24`) ; lanternes à trou Ø 5,2 pour LED `WS2812B` 5 mm ; **bouton Push & Go déplacé sur la chaudière** (`x = 25`, opercule de 0,4 mm à percer) car le toit de cabine est au ras des piles.
 - **Antenne RFID** : emplacement pas encore réservé dans le châssis-test (pas nécessaire au banc de pente) ; à placer loin des aimants lors de la coque Alpha.
 
 ### 10. Ordre de travail
 1. **Châssis-test** (châssis, roues 3,5 mm, transmission, logement piles) → *fait* (`generer_locomotive.py`, contrôlé par `outils/controler_locomotive.py`) ; reste à mesurer le moteur reçu et imprimer.
-2. Coque vapeur et plateau électronique.
+2. Coque vapeur et bac à piles → *fait* (`loco_coque_vapeur`, `loco_bac_piles`) ; plateau électronique à dessiner quand les modules seront achetés et mesurés (baie sous le bac).
 3. Rail-balise et logements d'étiquettes NFC dans tous les rails (voir `decisions-cao-v2.md` §10).

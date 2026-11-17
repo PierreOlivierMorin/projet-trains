@@ -49,7 +49,7 @@ Hypothèses réalistes pour une imprimante CoreXY rapide moderne (type Bambu Lab
 | :--- | :---: | :---: | :---: | :---: |
 | **Coque + Châssis Locomotive monobloc** | `85 g` | `2 h 15` | `1,70 \$` | **`2,25 \$`** |
 | **Boîtier Télécommande** | `55 g` | `1 h 30` | `1,10 \$` | **`1,50 \$`** |
-| **Aiguillage motorisé complet (corps + lame + tringlerie)** | `70 g` | `1 h 50` | `1,40 \$` | **`1,85 \$`** |
+| **Aiguillage motorisé complet (corps + lame + tringlerie)** *(V2 manuel mesuré : ~34 g corps + lame + levier ; boîtier servo latéral à concevoir)* | `70 g` | `1 h 50` | `1,40 \$` | **`1,85 \$`** |
 | **Rail droit `150 mm` avec clip Snap-Fit** | `28 g` | `0 h 35` | `0,56 \$` | **`0,70 \$`** |
 | **Rail courbe (1/8 de cercle) avec clip Snap-Fit** | `30 g` | `0 h 40` | `0,60 \$` | **`0,75 \$`** |
 | **Rail en côte micro-strié** | `42 g` | `0 h 55` | `0,84 \$` | **`1,05 \$`** |

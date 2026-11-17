@@ -33,11 +33,13 @@ Concevoir et commercialiser un **système de train jouet modulaire, robuste, mot
   - [`plan-developpement-stl-benchmark.md`](./03-cao-3d/plan-developpement-stl-benchmark.md) : Plan de développement STL en 5 niveaux (prompts + contrat d'interface + grille d'évaluation) pour tester un modèle local.
   - [`guide-impression-et-assemblage-v1.md`](./03-cao-3d/guide-impression-et-assemblage-v1.md) : Inventaire des pièces V2, quincaillerie, pauses d'impression, cotes contrôlées et protocole de test.
   - [`decisions-cao-v2.md`](./03-cao-3d/decisions-cao-v2.md) : Décisions de l'itération CAO V2 (CadQuery, finition « jouet en bois premium », circuit de test 8 + ovale, viaduc, banc de pente).
+  - [`plan-assemblage-et-achats.md`](./03-cao-3d/plan-assemblage-et-achats.md) : Plan d'assemblage pas à pas (locomotive, voie, aiguillages) et liste des pièces à acheter.
   - [`decisions-locomotive-v2.md`](./03-cao-3d/decisions-locomotive-v2.md) : Architecture de la locomotive Alpha reconçue (N20 à vis sans fin, 3 vitesses, roues 3,5 mm, coque vapeur, lecteur RFID).
   - [`cao_commun.py`](./03-cao-3d/cao_commun.py) : Socle CadQuery V2 (contrat d'interface, profil arrondi, Snap-Fit, évidement, export STL + STEP).
   - [`generer_rails.py`](./03-cao-3d/generer_rails.py) : Générateur V2 des pièces de voie : droit, côte, courbe 45°, adaptateur bois, Funky, piliers 25 et 50 mm (`.venv/bin/python`).
+  - [`generer_aiguillages.py`](./03-cao-3d/generer_aiguillages.py) : Aiguillages manuels V2 (gauche/droite, tronc F/M) à lame pivotante talonnable + levier latéral ; contrôlés par `outils/controler_aiguillage.py`.
   - [`verifier_stl.py`](./03-cao-3d/verifier_stl.py) : Validateur topologique automatique (`--update-viewer` pour rafraîchir le visualiseur).
-  - [`generer_locomotive.py`](./03-cao-3d/generer_locomotive.py) : Locomotive châssis-test V2 (châssis, roues, pignon, engrenages, support moteur, plateau piles) et scènes du visualiseur.
+  - [`generer_locomotive.py`](./03-cao-3d/generer_locomotive.py) : Locomotive V2 complète en mode châssis-test (châssis, roues, pignon, engrenages, support moteur, bac à piles à contacts, coque vapeur) et scènes du visualiseur.
   - [`generer_visualiseur_html.py`](./03-cao-3d/generer_visualiseur_html.py) : Reconstruit `visualiseur-assemblage.html` à partir des `.STL` générés.
 - `04-electronique-firmware/` *(à venir)* : Schémas électroniques, routage du mini-PCB sur mesure et firmware embarqué.
 - `05-business-et-certifications/` :
