@@ -1,0 +1,293 @@
+{
+ "assembly": {
+  "titre": "Châssis-test V2 sur rails (droit, droit, Funky, adaptateur bois)",
+  "instances": [
+   {
+    "key": "rail_droit_100mm_snapfit.stl",
+    "t": [
+     -100,
+     0,
+     -55.0
+    ],
+    "e": [
+     -14,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "rail_droit_100mm_snapfit.stl",
+    "t": [
+     0,
+     0,
+     -55.0
+    ],
+    "e": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "rail_funky_cremaillere_captif.stl",
+    "t": [
+     100,
+     0,
+     -55.0
+    ],
+    "e": [
+     14,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "adaptateur_rail_bois.stl",
+    "t": [
+     200,
+     0,
+     -55.0
+    ],
+    "e": [
+     28,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "loco_chassis_test.stl",
+    "t": [
+     0,
+     0,
+     -42.4
+    ],
+    "e": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "loco_support_moteur.stl",
+    "t": [
+     0,
+     0,
+     -39.4
+    ],
+    "e": [
+     0,
+     -12,
+     18
+    ]
+   },
+   {
+    "key": "loco_plateau_piles.stl",
+    "t": [
+     0,
+     0,
+     -20.0
+    ],
+    "e": [
+     0,
+     0,
+     32
+    ]
+   },
+   {
+    "key": "loco_roue_24mm.stl",
+    "t": [
+     23.0,
+     14.5,
+     -34.0
+    ],
+    "rx": 90,
+    "e": [
+     0,
+     16,
+     0
+    ]
+   },
+   {
+    "key": "loco_roue_24mm.stl",
+    "t": [
+     23.0,
+     -14.5,
+     -34.0
+    ],
+    "rx": -90,
+    "e": [
+     0,
+     -16,
+     0
+    ]
+   },
+   {
+    "key": "loco_roue_24mm_codeur.stl",
+    "t": [
+     -23.0,
+     14.5,
+     -34.0
+    ],
+    "rx": 90,
+    "e": [
+     0,
+     16,
+     0
+    ]
+   },
+   {
+    "key": "loco_roue_24mm.stl",
+    "t": [
+     -23.0,
+     -14.5,
+     -34.0
+    ],
+    "rx": -90,
+    "e": [
+     0,
+     -16,
+     0
+    ]
+   },
+   {
+    "key": "loco_pignon_central_essieu.stl",
+    "t": [
+     23.0,
+     -1.5,
+     -34.0
+    ],
+    "rx": -90,
+    "e": [
+     0,
+     0,
+     -14
+    ]
+   },
+   {
+    "key": "loco_engrenage_essieu.stl",
+    "t": [
+     23.0,
+     3.0,
+     -34.0
+    ],
+    "rx": -90,
+    "e": [
+     0,
+     8,
+     -8
+    ]
+   },
+   {
+    "key": "loco_engrenage_moteur.stl",
+    "t": [
+     8.951542440443792,
+     3.0,
+     -24.16316411657956
+    ],
+    "rx": -90,
+    "e": [
+     0,
+     10,
+     10
+    ]
+   }
+  ]
+ },
+ "circuit": {
+  "titre": "Voie V2 : droit, côte striée, droit, 2 courbes 45°, piliers 25 et 50 mm",
+  "instances": [
+   {
+    "key": "pilier_verrouillable_25mm.stl",
+    "t": [
+     -200,
+     80,
+     -55.0
+    ],
+    "e": [
+     0,
+     10,
+     0
+    ]
+   },
+   {
+    "key": "pilier_verrouillable_duplo.stl",
+    "t": [
+     -120,
+     80,
+     -55.0
+    ],
+    "e": [
+     0,
+     10,
+     0
+    ]
+   },
+   {
+    "key": "rail_droit_100mm_snapfit.stl",
+    "t": [
+     -300,
+     0,
+     -55.0
+    ],
+    "e": [
+     -14,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "rail_cote_100mm_strie.stl",
+    "t": [
+     -200,
+     0,
+     -55.0
+    ],
+    "e": [
+     -7,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "rail_droit_100mm_snapfit.stl",
+    "t": [
+     -100,
+     0,
+     -55.0
+    ],
+    "e": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "rail_courbe_45deg_snapfit.stl",
+    "t": [
+     0,
+     0,
+     -55.0
+    ],
+    "e": [
+     10,
+     0,
+     0
+    ]
+   },
+   {
+    "key": "rail_courbe_45deg_snapfit.stl",
+    "t": [
+     145.89343417595165,
+     54.13499294879453,
+     -55.0
+    ],
+    "rz": 45,
+    "e": [
+     20,
+     10,
+     0
+    ]
+   }
+  ]
+ }
+}

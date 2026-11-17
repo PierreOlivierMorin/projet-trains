@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Génère un visualiseur CAO 3D autonome (03-cao-3d/visualiseur-assemblage.html)
-embarquant en Base64 les 11 fichiers .STL binaires du dossier 03-cao-3d/stl/.
+embarquant en Base64 tous les fichiers .STL binaires du dossier 03-cao-3d/stl/,
+et les scènes d'assemblage de scenes-visualiseur.json (écrit par generer_locomotive.py).
 
 Ouvrable directement par double-clic dans Safari, Chrome ou Firefox sans serveur.
 """
@@ -13,7 +14,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projet Trains V1 — Inspecteur CAO 3D (11 STL)</title>
+  <title>Projet Trains — Inspecteur CAO 3D</title>
   <style>
     :root {
       --bg: #0f131a;
@@ -248,7 +249,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <main id="viewport">
     <canvas id="glCanvas"></canvas>
     <div class="hud-top">
-      <div class="hud-card" id="statsCard">Chargement des 11 STL...</div>
+      <div class="hud-card" id="statsCard">Chargement des STL...</div>
       <div class="hud-card" style="color:var(--muted)">
         Glisser : orbiter · Shift+Glisser : déplacer · Molette : zoomer · Déposer un .STL
       </div>
@@ -261,11 +262,17 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </main>
 
   <script>
+  (() => {
   const STL_B64 = __STL_DATA_JSON__;
+  const SCENES = __SCENES_JSON__;
 
   const PART_META = {
-    'loco_chassis_inferieur.stl': { label: 'Châssis inférieur', color: [0.23, 0.53, 0.92] },
-    'loco_coque_superieure_monobloc.stl': { label: 'Coque supérieure', color: [0.92, 0.28, 0.23] },
+    'loco_chassis_test.stl': { label: 'Châssis-test loco V2', color: [0.23, 0.53, 0.92] },
+    'loco_support_moteur.stl': { label: 'Support moteur N20 (provisoire)', color: [0.55, 0.55, 0.62] },
+    'loco_plateau_piles.stl': { label: 'Plateau piles 3×AAA', color: [0.92, 0.28, 0.23] },
+    'loco_roue_24mm_codeur.stl': { label: 'Roue codeur (aimant Ø3)', color: [0.32, 0.30, 0.40] },
+    'loco_engrenage_essieu.stl': { label: 'Engrenage essieu 14 dents', color: [0.96, 0.80, 0.30] },
+    'loco_engrenage_moteur.stl': { label: 'Engrenage moteur 20 dents', color: [0.98, 0.58, 0.20] },
     'loco_roue_24mm.stl': { label: 'Roue Ø24 sans boudin', color: [0.22, 0.24, 0.28] },
     'loco_pignon_central_essieu.stl': { label: 'Pignon 12 dents Ø16,8', color: [0.96, 0.68, 0.14] },
     'rail_droit_100mm_snapfit.stl': { label: 'Rail droit 100mm Snap-Fit', color: [0.22, 0.68, 0.50] },
@@ -274,7 +281,6 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     'rail_funky_cremaillere_captif.stl': { label: 'Rail Funky crémaillère 14mm', color: [0.60, 0.36, 0.88] },
     'adaptateur_rail_bois.stl': { label: 'Adaptateur rail bois', color: [0.78, 0.60, 0.36] },
     'pilier_verrouillable_duplo.stl': { label: 'Pilier H=50mm gros blocs', color: [0.92, 0.52, 0.18] },
-    'tuile_action_clipsable.stl': { label: "Tuile d'action clipsable", color: [0.14, 0.80, 0.46] },
     'pilier_verrouillable_25mm.stl': { label: 'Pilier H=25mm gros blocs', color: [0.95, 0.62, 0.28] },
     'jauge_calibration_tolerances.stl': { label: 'Jauge de calibration (jeux + perçages)', color: [0.85, 0.85, 0.30] },
   };
@@ -441,7 +447,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
   // --- État ---
   let mode = 'assembly';
-  let activePart = 'loco_chassis_inferieur.stl';
+  let activePart = 'loco_chassis_test.stl';
   let hiddenParts = new Set();
   let explode = 0;
   let clipAxis = 0;
@@ -462,31 +468,15 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         color: (PART_META[activePart] && PART_META[activePart].color) || [0.4, 0.7, 0.95]
       }];
     }
-    if (mode === 'circuit') {
-      return [
-        { key: 'pilier_verrouillable_duplo.stl', mat: makeModelMat(-50, 0, -50 - e*20, 0, 0), color: PART_META['pilier_verrouillable_duplo.stl'].color },
-        { key: 'rail_droit_100mm_snapfit.stl', mat: makeModelMat(-150 - e*18, 0, 0, 0, 0), color: PART_META['rail_droit_100mm_snapfit.stl'].color },
-        { key: 'rail_cote_100mm_strie.stl', mat: makeModelMat(-50, 0, 0, 0, 0), color: PART_META['rail_cote_100mm_strie.stl'].color },
-        { key: 'rail_courbe_45deg_snapfit.stl', mat: makeModelMat(50 + e*18, 0, 0, 0, 0), color: PART_META['rail_courbe_45deg_snapfit.stl'].color },
-        { key: 'tuile_action_clipsable.stl', mat: makeModelMat(-115 - e*18, 0, 13.8 + e*15, 180, 0), color: PART_META['tuile_action_clipsable.stl'].color },
-      ];
-    }
-    // Assemblage Complet centré autour de x = 135 -> décalage cx = -135, cz = -55
-    const cx = -135, cz = -55;
-    return [
-      { key: 'pilier_verrouillable_duplo.stl', mat: makeModelMat(100+cx, 0, 0+cz - e*24, 0, 0), color: PART_META['pilier_verrouillable_duplo.stl'].color },
-      { key: 'rail_droit_100mm_snapfit.stl', mat: makeModelMat(0+cx - e*18, 0, 50+cz, 0, 0), color: PART_META['rail_droit_100mm_snapfit.stl'].color },
-      { key: 'tuile_action_clipsable.stl', mat: makeModelMat(35+cx - e*18, 0, 63.8+cz + e*14, 180, 0), color: PART_META['tuile_action_clipsable.stl'].color },
-      { key: 'rail_funky_cremaillere_captif.stl', mat: makeModelMat(100+cx, 0, 50+cz, 0, 0), color: PART_META['rail_funky_cremaillere_captif.stl'].color },
-      { key: 'adaptateur_rail_bois.stl', mat: makeModelMat(200+cx + e*18, 0, 50+cz, 0, 0), color: PART_META['adaptateur_rail_bois.stl'].color },
-      { key: 'loco_chassis_inferieur.stl', mat: makeModelMat(115+cx, 0, 54.5+cz + e*22, 0, 0), color: PART_META['loco_chassis_inferieur.stl'].color },
-      { key: 'loco_coque_superieure_monobloc.stl', mat: makeModelMat(115+cx, 0, 69.5+cz + e*56, 0, 0), color: PART_META['loco_coque_superieure_monobloc.stl'].color },
-      { key: 'loco_pignon_central_essieu.stl', mat: makeModelMat(135+cx, -1.5, 71.0+cz + e*10, -90, 0), color: PART_META['loco_pignon_central_essieu.stl'].color },
-      { key: 'loco_roue_24mm.stl', mat: makeModelMat(135+cx, 10.25 + e*16, 71.0+cz + e*10, -90, 0), color: PART_META['loco_roue_24mm.stl'].color },
-      { key: 'loco_roue_24mm.stl', mat: makeModelMat(135+cx, -10.25 - e*16, 71.0+cz + e*10, 90, 0), color: PART_META['loco_roue_24mm.stl'].color },
-      { key: 'loco_roue_24mm.stl', mat: makeModelMat(181+cx, 10.25 + e*16, 71.0+cz + e*10, -90, 0), color: PART_META['loco_roue_24mm.stl'].color },
-      { key: 'loco_roue_24mm.stl', mat: makeModelMat(181+cx, -10.25 - e*16, 71.0+cz + e*10, 90, 0), color: PART_META['loco_roue_24mm.stl'].color },
-    ];
+    const scene = SCENES[mode];
+    return scene.instances.filter(i => models[i.key]).map(i => {
+      const ex = i.e || [0, 0, 0];
+      return {
+        key: i.key,
+        mat: makeModelMat(i.t[0] + ex[0]*e, i.t[1] + ex[1]*e, i.t[2] + ex[2]*e, i.rx || 0, i.rz || 0),
+        color: (PART_META[i.key] && PART_META[i.key].color) || [0.5, 0.7, 0.9]
+      };
+    });
   }
 
   // --- Grille & BBox ---
@@ -619,8 +609,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     } else {
       document.getElementById('dimsCard').textContent =
         mode === 'assembly'
-          ? 'Assemblage complet (échelle 1:1 mm) : Pilier + 3 Rails + Tuile + Locomotive'
-          : 'Circuit test : Pilier + Rail droit + Rail côte + Rail courbe 45° + Tuile';
+          ? SCENES.assembly.titre + ' (échelle 1:1 mm)'
+          : SCENES.circuit.titre + ' (échelle 1:1 mm)';
     }
   }
 
@@ -799,7 +789,8 @@ def main() -> None:
         entries.append(f'"{p.name}": "{b64}"')
     json_obj = "{\n    " + ",\n    ".join(entries) + "\n  }"
 
-    html = HTML_TEMPLATE.replace("__STL_DATA_JSON__", json_obj)
+    scenes = (Path(__file__).resolve().parent / "scenes-visualiseur.json").read_text(encoding="utf-8")
+    html = HTML_TEMPLATE.replace("__STL_DATA_JSON__", json_obj).replace("__SCENES_JSON__", scenes)
     out_html.write_text(html, encoding="utf-8")
     size_kb = out_html.stat().st_size / 1024.0
     print(f"[OK] {out_html.name}: {len(stl_files)} STL embarqués | {size_kb:.1f} Ko")

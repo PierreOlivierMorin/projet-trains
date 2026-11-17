@@ -43,7 +43,16 @@ La locomotive V1 ne pouvait pas être portée telle quelle (voir [`decisions-cao
 - Modules du commerce sur un **plateau électronique imprimé** vissé dans la coque (une loge + languette par module) ; ce plateau sert de gabarit au futur mini-PCB `35 × 22 mm`.
 - **Capteur couleur `APDS-9960` supprimé**, remplacé par un **lecteur RFID 13,56 MHz `PN532` compact** (~`26 × 18 mm` antenne intégrée, ou carte + antenne déportée). Antenne sous le châssis, **éloignée de l'aimant** (le néodyme nickelé perturbe le 13,56 MHz).
 
-### 9. Ordre de travail
-1. **Châssis-test** (châssis, roues 3,5 mm, transmission, logement piles) → impression avec la jauge, lancement du banc de pente.
+### 9. Écarts constatés à la conception du châssis-test
+- **Moteur plus lent que prévu** : les N20 à vis sans fin courants tournent à ~40 tr/min (300:1) et au mieux ~200 tr/min (59:1) sous 6 V. La paire d'engrenages **multiplie** donc la vitesse : 20 dents (moteur) → 14 dents (essieu), ×1,43. Moteur à commander : **~150–200 tr/min sous 6 V** (au lieu de ~300).
+- **Moteur en hauteur** : l'arbre de sortie doit rester à l'écart du pignon d'escalade et l'engrenage d'essieu ne peut pas dépasser `Ø 16` (sinon il touche le rail). Le réducteur est donc vertical, arbre à `z ≈ 31`, carter du moteur jusqu'à `z ≈ 59`. Le « tout le lourd en bas » (§6) n'est tenu que pour les aimants ; à surveiller sur le banc (basculement en courbe).
+- **Deux aimants `N52 20 × 5 × 3`** au lieu d'un `20 × 10 × 3` : la crémaillère Funky (`|y| ≤ 1,6`, `z = 14`) impose un canal central sous le plancher ; un aimant est placé au-dessus de chaque bande d'acier (`|y| ≈ 6,2`), à `1,2 mm` du rail.
+- **Attelages relevés** (plaque du crochet à `z = 14,6`) pour passer au-dessus de la crémaillère.
+- **Bande de roulement plate à chanfreins** au lieu de bombée : la gorge du pneu, au centre, supprimait le sommet du bombé. Les chanfreins de `0,4 mm` suffisent en courbe (contrôle CadQuery : 3,5 mm passe, 5 mm coince).
+- **Support moteur provisoire** : cotes du N20 supposées (`MOTEUR` dans `generer_locomotive.py`) ; seule cette pièce est à régénérer après mesure du moteur reçu.
+- **Antenne RFID** : emplacement pas encore réservé dans le châssis-test (pas nécessaire au banc de pente) ; à placer loin des aimants lors de la coque Alpha.
+
+### 10. Ordre de travail
+1. **Châssis-test** (châssis, roues 3,5 mm, transmission, logement piles) → *fait* (`generer_locomotive.py`, contrôlé par `outils/controler_locomotive.py`) ; reste à mesurer le moteur reçu et imprimer.
 2. Coque vapeur et plateau électronique.
 3. Rail-balise et logements d'étiquettes NFC dans tous les rails (voir `decisions-cao-v2.md` §10).

@@ -1,77 +1,78 @@
-# Guide d'impression 3D et d'assemblage — Prototype V1
+# Guide d'impression 3D et d'assemblage — Prototype V2
 
-Ce guide regroupe les **11 fichiers `.STL`** générés dans [`03-cao-3d/stl/`](./stl/), leurs cotes mécaniques vérifiées sans collision et la marche à suivre pour imprimer et tester votre premier circuit.
+Ce guide regroupe les fichiers `.STL` générés dans [`03-cao-3d/stl/`](./stl/) (avec leur `.step` dans [`step/`](./step/)), les cotes contrôlées sans collision et la marche à suivre pour imprimer et tester. Toutes les pièces sont générées en CadQuery (V2) ; la V1 en maillage Python pur reste consultable dans l'historique git.
 
 > [!TIP]
-> Pour inspecter les 11 pièces et leur assemblage à l'échelle 1:1 sans installer de logiciel, ouvrez [`visualiseur-assemblage.html`](./visualiseur-assemblage.html) d'un double-clic dans Safari ou Chrome (régénérable à tout moment via `python3 03-cao-3d/generer_visualiseur_html.py`).
+> Pour inspecter les pièces et leur assemblage à l'échelle 1:1, ouvrez [`visualiseur-assemblage.html`](./visualiseur-assemblage.html) d'un double-clic (régénérable via `python3 03-cao-3d/verifier_stl.py --update-viewer`).
 
 ---
 
-## 1. Inventaire des 11 fichiers `.STL` générés
+## 1. Inventaire
 
-### Pièces de circuit (script V2 CadQuery [`generer_rails.py`](./generer_rails.py), sauf la tuile : [`generer_prototype_rails.py`](./generer_prototype_rails.py))
+### À imprimer en premier
 
-> Depuis la V2, les rails sont **évidés à nervures** (~40 % de filament en moins), arrondis (« jouet en bois premium ») et exportés aussi en `.step` dans [`step/`](./step/).
+| Fichier `.STL` | Dimensions | Usage |
+| :--- | :--- | :--- |
+| [`jauge_calibration_tolerances.stl`](./stl/jauge_calibration_tolerances.stl) | `55,0 × 80,0 × 12,0 mm` | 4 prises Snap-Fit (jeux `0,10–0,25`, gravés « 10…25 ») + 4 perçages (`Ø 2,95–3,10`, gravés « 95…10 »). Le jeu retenu règle `JEU_IMPRESSION`, le perçage retenu règle `ALESAGE_SERRE` de la loco. |
+
+### Voie ([`generer_rails.py`](./generer_rails.py))
+
+Rails **évidés à nervures** (~40 % de filament en moins), arrondis « jouet en bois premium ».
 
 | Fichier `.STL` | Dimensions hors-tout | Usage | Supports |
 | :--- | :--- | :--- | :---: |
-| [`rail_droit_100mm_snapfit.stl`](./stl/rail_droit_100mm_snapfit.stl) | `116,5 × 40,0 × 12,0 mm` | Rail droit de base à clip Snap-Fit + verrouillage vertical 45° | Non |
-| [`rail_courbe_45deg_snapfit.stl`](./stl/rail_courbe_45deg_snapfit.stl) | `159,8 × 88,0 × 12,0 mm` | Rail courbe 45° (`R = 180 mm`, 8 pièces = cercle complet) | Non |
-| [`rail_cote_100mm_strie.stl`](./stl/rail_cote_100mm_strie.stl) | `116,5 × 40,0 × 12,0 mm` | Rail de montée avec micro-stries antidérapantes (`0,8 mm`) | Non |
-| [`adaptateur_rail_bois.stl`](./stl/adaptateur_rail_bois.stl) | `66,6 × 40,0 × 12,0 mm` | Raccord Snap-Fit femelle ↔ cheville mâle bois (`Ø 11,2 mm`) | Non |
-| [`pilier_verrouillable_duplo.stl`](./stl/pilier_verrouillable_duplo.stl) | `63,6 × 47,0 × 56,0 mm` | Pilier `H = 50 mm` (rebords `56 mm`), base compatible gros blocs | Non |
-| [`pilier_verrouillable_25mm.stl`](./stl/pilier_verrouillable_25mm.stl) | `63,6 × 47,0 × 31,0 mm` | Pilier `H = 25 mm` (rebords `31 mm`), même base | Non |
-| [`jauge_calibration_tolerances.stl`](./stl/jauge_calibration_tolerances.stl) | `55,0 × 80,0 × 12,0 mm` | **À imprimer en premier** : 4 prises Snap-Fit (jeux `0,10–0,25`) + 4 perçages (`Ø 2,95–3,10`) | Non |
-| [`tuile_action_clipsable.stl`](./stl/tuile_action_clipsable.stl) | `30,0 × 19,7 × 3,2 mm` | Tuile colorée clipsable avec canal central abaissé (`0,4 mm`) | Non |
-| [`rail_funky_cremaillere_captif.stl`](./stl/rail_funky_cremaillere_captif.stl) | `116,5 × 40,0 × 14,0 mm` | Rail cascade : crémaillère (`z=14 mm`), loges acier, glissières 45° | Non |
+| [`rail_droit_100mm_snapfit.stl`](./stl/rail_droit_100mm_snapfit.stl) | `116,5 × 40,0 × 12,0 mm` | Rail droit Snap-Fit + verrouillage vertical 45° | Non |
+| [`rail_courbe_45deg_snapfit.stl`](./stl/rail_courbe_45deg_snapfit.stl) | `159,8 × 88,0 × 12,0 mm` | Courbe 45° à gauche (`R = 180 mm`, 8 pièces = cercle ; retournée = courbe à droite) | Non |
+| [`rail_cote_100mm_strie.stl`](./stl/rail_cote_100mm_strie.stl) | `116,5 × 40,0 × 12,0 mm` | Rail de montée à micro-stries (`0,8 mm`) | Non |
+| [`adaptateur_rail_bois.stl`](./stl/adaptateur_rail_bois.stl) | `66,6 × 40,0 × 12,0 mm` | Prise Snap-Fit femelle ↔ cheville mâle bois (`Ø 11,2 mm`) | Non |
+| [`rail_funky_cremaillere_captif.stl`](./stl/rail_funky_cremaillere_captif.stl) | `116,5 × 40,0 × 14,0 mm` | Crémaillère (`z = 14`), loges acier, glissières captives 45° | Non |
+| [`pilier_verrouillable_duplo.stl`](./stl/pilier_verrouillable_duplo.stl) | `63,6 × 47,0 × 56,0 mm` | Pilier `H = 50 mm`, base compatible gros blocs | Non |
+| [`pilier_verrouillable_25mm.stl`](./stl/pilier_verrouillable_25mm.stl) | `63,6 × 47,0 × 31,0 mm` | Pilier `H = 25 mm` | Non |
 
-### Pièces de la Locomotive (roue et pignon : V2 [`generer_locomotive.py`](./generer_locomotive.py) ; châssis et coque : V1 [`generer_prototype_locomotive.py`](./generer_prototype_locomotive.py), à reconcevoir)
+### Locomotive châssis-test ([`generer_locomotive.py`](./generer_locomotive.py), voir [`decisions-locomotive-v2.md`](./decisions-locomotive-v2.md))
 
-| Fichier `.STL` | Dimensions hors-tout | Quantité / loco | Supports |
-| :--- | :--- | :---: | :---: |
-| [`loco_chassis_inferieur.stl`](./stl/loco_chassis_inferieur.stl) | `94,0 × 46,0 × 22,0 mm` | `1` | Oui *(sous le plancher `10,5 mm` entre patins)* |
-| [`loco_coque_superieure_monobloc.stl`](./stl/loco_coque_superieure_monobloc.stl) | `84,0 × 40,0 × 32,0 mm` | `1` | Non *(nez 39° et toit chanfreiné)* |
-| [`loco_roue_24mm.stl`](./stl/loco_roue_24mm.stl) | `Ø 24,0 × 6,9 mm` | `4` | Non *(V2 : sans boudin, guidée par la rainure)* |
-| [`loco_pignon_central_essieu.stl`](./stl/loco_pignon_central_essieu.stl) | `Ø 16,8 × 3,0 mm` | `1` | Non |
+| Fichier `.STL` | Dimensions | Qté | Notes d'impression |
+| :--- | :--- | :---: | :--- |
+| [`loco_chassis_test.stl`](./stl/loco_chassis_test.stl) | `103,5 × 44,0 × 22,4 mm` | 1 | **Pause** à `z = 3,6 mm` pour insérer les 2 aimants N52 `20 × 5 × 3` (même sens de pôle) |
+| [`loco_roue_24mm.stl`](./stl/loco_roue_24mm.stl) | `Ø 24,0 × 4,5 mm` | 3 | Face extérieure sur le plateau |
+| [`loco_roue_24mm_codeur.stl`](./stl/loco_roue_24mm_codeur.stl) | `Ø 24,0 × 4,5 mm` | 1 | **Pause** à `z = 1,8 mm` pour l'aimant `Ø 3 × 1` (roue arrière gauche) |
+| [`loco_pignon_central_essieu.stl`](./stl/loco_pignon_central_essieu.stl) | `Ø 16,8 × 3,0 mm` | 1 | Couche `0,12–0,16 mm` |
+| [`loco_engrenage_essieu.stl`](./stl/loco_engrenage_essieu.stl) | `Ø 16 × 3 mm` (14 dents m1) | 1 | Couche `0,12 mm`, remplissage 100 % |
+| [`loco_engrenage_moteur.stl`](./stl/loco_engrenage_moteur.stl) | `Ø 22 × 5 mm` (20 dents m1, alésage en D) | 1 | Couche `0,12 mm`, remplissage 100 % |
+| [`loco_support_moteur.stl`](./stl/loco_support_moteur.stl) | `14 × 19 × 24 mm` | 1 | **Provisoire** : cotes du N20 supposées, à recaler (`MOTEUR` dans le générateur) |
+| [`loco_plateau_piles.stl`](./stl/loco_plateau_piles.stl) | `44,5 × 44,0 × 2,0 mm` | 1 | Boîtier 3×AAA fixé par 2 sangles |
 
----
-
-## 2. Cotes d'engrènement vérifiées (Zéro collision)
-
-L'ensemble roue / pignon / crémaillère a été contrôlé en CadQuery (interférence nulle sur rail standard, engrènement sur rail Funky). La tuile d'action et les patins captifs du châssis V1 présentent des collisions connues (voir [`decisions-cao-v2.md`](./decisions-cao-v2.md) §8) :
-
-- **Fond de rainure de rail** : `z = 9,0 mm` | **Plateau central normal / bois** : `z = 12,0 mm`.
-- **Roue (`loco_roue_24mm.stl`)** : bande de roulement **`Ø 24,0 mm`** (`R = 12,0 mm`) posée sur le fond de rainure, **sans boudin** (V2), `5 mm` de large dans la rainure de `6 mm` → axe d'essieu à **`z_essieu = 21,0 mm`**.
-- **Pignon central (`loco_pignon_central_essieu.stl`)** : `12` dents, **`Ø extérieur = 16,8 mm`** (`R = 8,4 mm`) → point bas des dents à **`z = 12,6 mm`** :
-  - **`+0,6 mm` de garde** au-dessus des rails standards et en bois (`12,0 mm`).
-  - **`+0,2 mm` (ou `+0,6–1,0 mm` avec pneu TPU)** au-dessus du canal central abaissé des tuiles d'action (`12,4 mm`).
-  - **`1,4 mm` d'engrènement** dans la crémaillère du rail Funky (`z = 14,0 mm`).
-- **Capteur de couleur `APDS-9960`** : fenêtre de `8,0 × 8,2 mm` décalée à **`y = +4,7 mm`** sous le châssis pour lire directement l'aile colorée de la tuile (`y ∈ [2,2, 9,0 mm]`).
+**Quincaillerie** : motoréducteur N20 à vis sans fin ~150–200 tr/min sous 6 V (arbre `Ø 3` en D) · 2 tiges acier `Ø 3 × 30 mm` · 2 aimants N52 `20 × 5 × 3` · 1 aimant `Ø 3 × 1` · capteur Hall `A3144` (TO-92) · boîtier 3×AAA avec interrupteur · 4 vis M3 auto-taraudeuses × 8 · 2 vis M2 × 6 · 1 collier de serrage 2,5 mm · joints toriques `14 × 2` (option pneus).
 
 ---
 
-## 3. Paramètres de tranchage recommandés (Slicer)
+## 2. Cotes contrôlées (CadQuery)
 
-Pour Bambu Studio, PrusaSlicer ou Cura :
-- **Hauteur de couche** : `0,20 mm` (`0,16 mm` recommandé pour `loco_pignon_central_essieu.stl` et `loco_roue_25_5mm.stl`).
-- **Périmètres (murs)** : `3` boucles (`1,2 mm` avec buse `0,4 mm`) pour la solidité des clips Snap-Fit et des patins Coaster Hooks.
-- **Remplissage** : `15–20 % Gyroid` (piliers, rails) et `40–100 %` pour le pignon et les roues.
-- **Matériaux** :
-  - **PETG** : fortement recommandé pour les **rails à clips Snap-Fit**, les **tuiles d'action** et le **châssis** (légère souplesse élastique, ne casse pas à l'assemblage).
-  - **PLA+** : parfait pour la **coque**, les **piliers** et le **pignon**.
-  - **TPU 95A** (ou joints toriques caoutchouc `14 × 2 mm` / `#12`) : dans la gorge annulaire des 4 roues pour une adhérence maximale en côte.
-- **Supports** : désactivés sur **10 pièces sur 11** ; activer uniquement les **supports arborescents (plateau uniquement)** sous le plancher de `loco_chassis_inferieur.stl` (faciles à retirer à la pince).
+Contrôles automatiques : [`outils/controler_locomotive.py`](../outils/controler_locomotive.py) (loco sur droit, en courbe `R = 180`, sur Funky) et interférence nulle entre rails assemblés (droit, courbe, Funky, adaptateur, rails posés sur les piliers).
+
+- **Rail** : fond de rainure `z = 9,0` · plateau `z = 12,0` · crémaillère Funky `z = 14,0` (|y| ≤ 1,6).
+- **Roues** : `Ø 24` sur le fond de rainure → essieux à `z = 21,0` ; largeur `3,5 mm` (rainure `6 mm`). En courbe `R = 180`, empattement `46 mm`, chaque essieu est braqué de `7,3°` : une roue de 5 mm coince (vérifié), 3,5 mm passe.
+- **Pignon d'escalade** : bas des dents à `z = 12,6` → `+0,6` au-dessus d'un rail standard ou bois, `1,4 mm` d'engrènement dans la crémaillère.
+- **Châssis** : dessous à `z = 12,6` (`+0,6` sur le rail) ; canal central |y| ≤ 2,4 libre jusqu'à `z = 14,6` pour la crémaillère ; aimants au-dessus des bandes d'acier (|y| ≈ 6,2), `1,2 mm` au-dessus du rail.
+- **Transmission** : arbre du N20 en `x = 8,95`, `z = 30,84` ; entraxe `17,15 mm` (`17,0` + `0,15` de jeu) ; ×1,43 vers l'essieu avant.
+- **Hauteur** avec boîtier de piles : `~59 mm` (tunnel `62,5 mm`).
 
 ---
 
-## 4. Protocole de validation en 3 étapes
+## 3. Paramètres de tranchage (Bambu Studio / PrusaSlicer / Cura)
 
-1. **Test 1 — Jonctions Snap-Fit & Compatibilité Bois (4 pièces, ~2 h d'impression)**
-   - Imprimer `2 × rail_droit_100mm_snapfit.stl`, `1 × adaptateur_rail_bois.stl` et `1 × pilier_verrouillable_duplo.stl`.
-   - Vérifier le « clic » d'assemblage sur un tapis, l'absence de jeu vertical sur la jonction posée sur le pilier, l'insertion sur des gros blocs de construction à la maison et le raccord sur un rail en bois existant.
-2. **Test 2 — Roulage & Tuile d'action (~2 h d'impression)**
-   - Imprimer `1 × loco_chassis_inferieur.stl`, `4 × loco_roue_25_5mm.stl`, `1 × loco_pignon_central_essieu.stl` et `1 × tuile_action_clipsable.stl`.
-   - Monter deux axes `Ø 3 mm` (tige acier/laiton de `40 mm`), glisser les roues + le pignon au centre de l'essieu arrière et faire rouler à la main sur les rails normaux, bois, côte striée et tuile d'action pour valider l'absence totale de frottement.
-3. **Test 3 — Système « Funky / Anti-Gravité »**
-   - Imprimer `1 × rail_funky_cremaillere_captif.stl` et coller deux bandes d'acier (`~2 mm × 0,8 mm × 80 mm`) dans les loges latérales.
-   - Insérer un aimant néodyme `20 × 10 × 3 mm` dans la loge du châssis (puis poser la coque `loco_coque_superieure_monobloc.stl` par-dessus) et vérifier à la main que les patins 45°, le pignon et l'aimant maintiennent solidement le châssis même retourné à **180°**.
+- **Couche** : `0,20 mm` (`0,12–0,16 mm` pour engrenages, pignon et roues).
+- **Périmètres** : `3` (`1,2 mm` avec buse `0,4`) pour les clips Snap-Fit et les paliers.
+- **Remplissage** : `15–20 % gyroïde` (rails, piliers, châssis) ; `100 %` pour engrenages et pignon.
+- **Matériaux** : **PETG** pour les rails (souplesse des clips) et le châssis ; **PLA+** pour piliers, roues, engrenages ; **TPU 95A** ou joints toriques dans la gorge des roues.
+- **Supports** : aucun.
+- **Pauses d'impression** (aimants scellés) : ajouter une pause à la hauteur indiquée dans l'inventaire, insérer, reprendre.
+
+---
+
+## 4. Protocole de validation
+
+1. **Jauge** : enfoncer l'embout mâle d'un rail dans chaque prise, retenir celle qui clique sans forcer ni ballotter ; glisser une tige `Ø 3` dans les 4 trous, retenir celui où elle tourne librement sans jeu (paliers) et celui où elle tient serrée (roues). Reporter les valeurs dans `cao_commun.JEU_IMPRESSION` et `generer_locomotive.ALESAGE_SERRE` / `ALESAGE_PALIER`, puis régénérer.
+2. **Voie** : `2 × rail_droit`, `1 × adaptateur_rail_bois`, `1 × pilier` — clic sur tapis, jonction rigide sur pilier, raccord sur un rail bois, pose sur gros blocs.
+3. **Châssis-test** : mesurer le N20 reçu (réducteur : épaisseur, largeur, longueur, hauteur de l'arbre ; diamètre et longueur du moteur), mettre à jour `MOTEUR`, régénérer et imprimer le support. Monter, câbler moteur + piles + interrupteur, faire rouler sur droits, courbes et côte striée.
+4. **Funky** : coller deux bandes d'acier (`~2 × 0,8 × 80 mm`) dans les loges du rail Funky et vérifier l'attraction des aimants et l'engrènement du pignon.
